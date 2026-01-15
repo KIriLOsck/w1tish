@@ -1,8 +1,11 @@
 let accessToken = null;
 
 async function login(username, password) {
-    const response = await fetch('http://localhost:8000/auth', {
+    const response = await fetch('http://127.0.0.1:8000/auth', {
         method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
         body: JSON.stringify({ username, password })
     });
     if (response.status === 422) {

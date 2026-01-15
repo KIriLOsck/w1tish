@@ -12,7 +12,6 @@ services:
     ports:
       - "5432:5432"
 
-
   backend:
     build: backend/.
     environment:
@@ -21,6 +20,8 @@ services:
       - DB_PASS=${DB_PASS:-admin}
       - DB_USERS_NAME=users_db
       - DB_MESSAGES_NAME=messages_db
+    ports:
+      - "8000:8000"
   frontend:
     build: frontend/.
     ports:
