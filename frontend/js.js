@@ -23,6 +23,8 @@ function sign_in_account() {
         new_main_div.className = "main"
         parent.insertBefore(new_main_div, document.getElementsByClassName("main").item(0))
         parent.removeChild(document.getElementById("main_registration"))
+        error_h = document.createElement("h1")
+        error_h.id = "error"
         username_input = document.createElement("input")
         username_input.type = "text"
         username_input.id = "input_username"
@@ -40,7 +42,7 @@ function sign_in_account() {
         registration_btn.type = "button"
         registration_btn.id = "registration"
         registration_btn.value = "Зарегистрироваться"
-        new_main_div.append(username_input, password_input, sign_in_btn, registration_btn)
+        new_main_div.append(error_h, username_input, password_input, sign_in_btn, registration_btn)
         registration = document.getElementById("registration");
         sign_in = document.getElementById("sign_in");
         sign_in.addEventListener("click", sign_in_account);
@@ -73,6 +75,8 @@ function registration_account() {
         new_main_div.className = "main"
         parent.insertBefore(new_main_div, document.getElementsByClassName("main").item(0))
         parent.removeChild(document.getElementById("main_sign_in"))
+        error_h = document.createElement("h1")
+        error_h.id = "error"
         username_input = document.createElement("input")
         username_input.type = "text"
         username_input.id = "input_username"
@@ -99,7 +103,7 @@ function registration_account() {
         registration_btn.type = "button"
         registration_btn.id = "registration"
         registration_btn.value = "Зарегистрироваться"
-        new_main_div.append(username_input, email_input, password_input, password_confirmation_input, registration_btn, sign_in_btn)
+        new_main_div.append(error_h, username_input, email_input, password_input, password_confirmation_input, registration_btn, sign_in_btn)
         registration = document.getElementById("registration");
         sign_in = document.getElementById("sign_in");
         sign_in.addEventListener("click", sign_in_account);
