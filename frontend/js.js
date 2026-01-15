@@ -1,5 +1,6 @@
 let registration = document.getElementById("registration");
 let sign_in = document.getElementById("sign_in");
+let error_text = document.getElementById("error")
 sign_in.addEventListener("click", sign_in_account);
 registration.addEventListener("click", registration_account);
 function sign_in_account() {
@@ -10,9 +11,9 @@ function sign_in_account() {
             if (password.toLowerCase() != password) {
                 if (password.toUpperCase() != password) {
                     console.log(username, password);         //TODO отправлять на эндпоинт для авторизации(:8000/auth), принимать jwt токены(refresh и access) и сохранять их в localStorage 
-                }else {console.log("Нету символа(ов) нижнего регистра")}
-            }else {console.log("Нету символа(ов) вернего регистра")}
-        } else {console.log("Длина меньше 8")}
+                }else {error_text.textContent = "Нету символа(ов) нижнего регистра в пароле"}
+            }else {error_text.textContent = "Нету символа(ов) верхнего регистра в пароле"}
+        } else {error_text.textContent = "Длина пароля меньше 8"}
         
     }
     else {
@@ -50,18 +51,21 @@ function sign_in_account() {
 function registration_account() {
     if (document.getElementsByClassName("main").item(0).id == "main_registration"){
         let username = document.getElementById("input_username").value
-        let email = document.getElementById("input_email").value
-        let password = document.getElementById("input_password").value
+        let email = document.getElementById("input_email")
+        let password = document.getElementById("input_password")
+        console.log(password.checkValidity())
         let password_confirmation = document.getElementById("confirmation_input_password").value
         if (password.length >= 8) {
             if (password.toLowerCase() != password) {
                 if (password.toUpperCase() != password) {
                     if (password == password_confirmation) {
-                        console.log(username, email, password)          //TODO добавить регулярное выражение для проверки валидности email
-                    } else {console.log("Пароли не совпадают")}
-                }else {console.log("Нету символа(ов) нижнего регистра")}
-            }else {console.log("Нету символа(ов) вернего регистра")}
-        } else {console.log("Длина меньше 8")}
+                        if (email.checkValidity()) {
+                            console.log(username, email.value, password)
+                        } else {error_text.textContent = "Электронная почта не валидна"}       
+                    } else {error_text.textContent = "Пароли не совпадают"}
+                }else {error_text.textContent = "Нету символа(ов) нижнего регистра в пароле"}
+            }else {error_text.textContent = "Нету символа(ов) верхнего регистра в пароле"}
+        } else {error_text.textContent = "Длина пароля меньше 8"}
     }
     else {
         parent = document.getElementsByClassName("main").item(0).parentNode;
@@ -75,8 +79,8 @@ function registration_account() {
         username_input.id = "input_username"
         username_input.placeholder = "Имя пользователя"
         email_input = document.createElement("input")
-        email_input.type = "email"
-        email_input.id = "input_email"
+        email_input.type ="email"
+        email_input.id = "input_email" 
         email_input.placeholder = "E-mail"
         password_input = document.createElement("input")
         password_input.type = "password"

@@ -6,3 +6,8 @@
     gap: 30px;
     align-content: center;
 }
+
+#error {
+    color: red;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
