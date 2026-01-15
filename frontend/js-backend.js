@@ -1,7 +1,7 @@
 let accessToken = null;
 
 async function login(username, password) {
-    const response = await fetch('http://localhosh:8000/auth', {
+    const response = await fetch('http://backend:8000/auth', {
         method: 'POST',
         body: JSON.stringify({ username, password })
     });
@@ -22,7 +22,7 @@ async function login(username, password) {
 }
 
 async function getProtectedData() {
-    const response = await fetch('http://localhost:8000/user/data', {
+    const response = await fetch('http://backend:8000/user/data', {
         headers: {
             'Authorization': `Bearer ${accessToken}`
         }
@@ -43,7 +43,7 @@ async function getProtectedData() {
 }
 
 async function refreshToken() {
-    const response = await fetch('http://localhost:8000/update_token', {
+    const response = await fetch('http://backend:8000/update_token', {
         headers: {
             'Authorization': `Bearer ${refresh_token}`
         }
