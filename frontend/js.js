@@ -52,8 +52,7 @@ function registration_account() {
     if (document.getElementsByClassName("main").item(0).id == "main_registration"){
         let username = document.getElementById("input_username").value
         let email = document.getElementById("input_email")
-        let password = document.getElementById("input_password")
-        console.log(password.checkValidity())
+        let password = document.getElementById("input_password").value
         let password_confirmation = document.getElementById("confirmation_input_password").value
         if (password.length >= 8) {
             if (password.toLowerCase() != password) {
