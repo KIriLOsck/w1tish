@@ -94,19 +94,59 @@ body {
     background-color: #D9D9D9;
     border-color: #FFFFFF;
     text-decoration: underline;
+    font-size: 16pt;
 }
 
 .active {
-    cursor:default;
+    font-size: 20pt;
     margin-top: 20px;
     border-radius: 30px;
     background-color: #FFFFFF;
     color: #000000;
     text-decoration: none;
+    transition:all 0.3s ease;
+}
+
+.active:hover {
+    background-color: #c5c5c5;
+    padding-left: 50px;
+    padding-right: 50px;
 }
 
 input {
     border-color: #FFFFFF;
+    border-width: 0px;
+}
+
+body {
+    overflow: hidden;
+    perspective: 1000px;
+}
+
+div.W1tish {
+    position: absolute;
+    width: 3500px;
+    height: 100vh;
+    z-index: -1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform:  rotateZ(45deg);
+    user-select: none; 
+}
+
+div.W1tish p {
+    animation-play-state: running;
+    color: #777777;
+    font-family: Inter;
+    font-size: 8vw;
+    animation: xxx 200s linear infinite both;
+}
+
+@keyframes xxx {
+    from {
+        transform: translateY(-2000vh);
+    }
 }
 
 

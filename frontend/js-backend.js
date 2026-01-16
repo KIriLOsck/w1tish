@@ -74,14 +74,13 @@ async function refreshToken(refresh_token) {
 
     if (response.status === 500) {
         console.log("Виноват бэкэндер")
-    } else if (response.status === 401) {
-        sign_in_account()
+    } else if (response.status === 422 || response.status === 401) {
+        create_sign_in_container()
     } else {
         const data = await response.json();
     // Сохраняем access token только в памяти приложения
         localStorage.setItem("accessToken", data.access_token);
         localStorage.setItem("refresh_token", data.refresh_token);
 
-        getProtectedData(localStorage.getItem("accessToken"))
-    }
+        getProtectedData(localStorage.getItem("accessToken"))}
 }
