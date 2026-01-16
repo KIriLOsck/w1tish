@@ -1,0 +1,133 @@
+@font-face {
+    font-family: 'Inter';
+    src: url(font/Inter-V.ttf);
+}
+
+#main_container {
+    font-family: Inter;
+    display: flex;
+    flex-direction: row;
+    padding: 15px 15px 15px 15px;
+    border-radius: 25px;
+    width: 97%;
+    gap: 20px;
+    justify-self: center;
+    background-color: #9D9D9D;
+    height: 95vh;
+}
+
+#view_container {
+    width: 20%;
+    display: flex;
+    justify-content: space-between;
+}
+
+
+#contacts, #view_container {
+    display: flex;
+    flex-direction: column;
+    
+}
+
+#contacts {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.contact {
+    display: flex;
+    flex-direction: column;
+    background-color: #d9d9d9;
+    border-radius: 10px;
+    width: 93%;
+    height: 64px;
+    padding: 10px 10px 10px 10px;
+}
+
+.view_contact {
+    display: flex;
+    height: 50%;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+    text-align: start;
+}
+
+.view_message {
+    display: flex;
+    height: 50%;
+    text-align: start;
+    align-items: center;
+}
+
+#profile {
+    height: 48px;
+    width: 93%;
+    margin-top: 20px;
+    background-color: #d9d9d9;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    padding: 10px 10px 10px 10px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    height: 32px;
+    width: 32px;
+}
+
+.user_view {
+    
+    display: flex;
+    flex-direction: row;
+}
+
+.user_info {
+    padding-left: 5px;
+    display: flex;
+    flex-direction: column;
+}
+
+p {
+    margin: 0px;
+}
+
+#chat_container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 80%;
+    background-color: #666666;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+
+.oponent {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 30px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    padding-right: 30px;
+    gap: 10px;
+}
+
+#send {
+    height: 32px;
+    width: auto;
+    border-radius: 30px;
+    background-color: #ffffff;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
