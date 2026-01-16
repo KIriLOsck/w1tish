@@ -72,10 +72,8 @@ async function refreshToken(refresh_token) {
 
     if (response.status === 500) {
         console.log("Виноват бэкэндер")
-    } else if (response.status === 401) { 
+    } else if (response.status === 401 || response.status === 422) { 
         create_sign_in_container()
-    } else if (response.status === 422) {
-            console.log("Виноват фронтендер")
     } else {
         const data = await response.json();
         localStorage.setItem("accessToken", data.access_token);
