@@ -8,7 +8,7 @@ async function registration(username, email, password) {
     })
     
     if (response.status === 200) {
-        login(username, password)
+        await login(username, password)
     } else {
         console.log("Ошибка: ", response.status)
     }
@@ -35,7 +35,7 @@ async function login(username, password) {
         localStorage.setItem("accessToken", data.access_token);
         localStorage.setItem("refresh_token", data.refresh_token);
 
-        getProtectedData(localStorage.getItem("accessToken"))
+        await getProtectedData(localStorage.getItem("accessToken"))
     }
 }
 
@@ -45,15 +45,15 @@ async function getProtectedData(token) {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ token })
+        body: JSON.stringify({ token }) //проверяй не undefined ли токен
     });
 
-    if (response.status === 401 || response.status === 422) {
+    if (response.status === 401 || response.status === 422) { //422 это когда токена нету куттулу а не когда его надо обновить исправляй давай
         console.log("Нужно обновить токен (refresh)");
     // Здесь вызывается функция обновления токена через куку
-        refreshToken(localStorage.getItem("refresh_token"))
+        await refreshToken(localStorage.getItem("refresh_token"))
     } else if (response.status === 500) {
-        console.log("Виноват бэкэндер")
+        console.log("Виноват бэкэндер") // TODO обработать ошибку 422 как ошибку фронтендера
     } else {
         const data = await response.json();
         console.log(data);
@@ -72,7 +72,7 @@ async function refreshToken(refresh_token) {
 
     if (response.status === 500) {
         console.log("Виноват бэкэндер")
-    } else if (response.status === 422 || response.status === 401) {
+    } else if (response.status === 422 || response.status === 401) { //опять же 401 это протухший токен а 422 критическая ошибка фронтенда
         create_sign_in_container()
     } else {
         const data = await response.json();
@@ -80,5 +80,5 @@ async function refreshToken(refresh_token) {
         localStorage.setItem("accessToken", data.access_token);
         localStorage.setItem("refresh_token", data.refresh_token);
 
-        getProtectedData(localStorage.getItem("accessToken"))}
+        await getProtectedData(localStorage.getItem("accessToken"))}
 }
