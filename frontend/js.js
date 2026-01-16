@@ -77,11 +77,10 @@ function create_sign_in_container() {
     sign_in_btn.className = "active btn"
     sign_in_btn.value = "Войти";
 
-    registration_btn = document.createElement("input");
-    registration_btn.type = "button";
+    registration_btn = document.createElement("p");
     registration_btn.id = "registration";
     registration_btn.className = "btn"
-    registration_btn.value = "Зарегистрироваться";
+    registration_btn.textContent = "Зарегистрироваться";
 
     new_main_div.append(error_h, username_input, password_input, reset_password_btn, sign_in_btn, registration_btn);
     activate_btn();
@@ -127,11 +126,10 @@ function create_registration_container() {
     password_confirmation_input.placeholder = "Confirmation password";
     password_confirmation_input.autocomplete = "new-password";
 
-    sign_in_btn = document.createElement("input");
-    sign_in_btn.type = "button";
+    sign_in_btn = document.createElement("p");
     sign_in_btn.id = "sign_in";
     sign_in_btn.className = "btn"
-    sign_in_btn.value = "Войти в аккаунт";
+    sign_in_btn.textContent = "Войти в аккаунт";
 
     registration_btn = document.createElement("input");
     registration_btn.type = "button";
