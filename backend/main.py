@@ -2,10 +2,10 @@ from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
 from datetime import datetime
 
-from errors import UserExistError
+from errors import UserExistError, UserNotFoundError, WrongPasswordError
 from models import AuthRequest, RegisterRequest, ResponseData, RefreshTokens
 
-from auth_methods import register_new
+from auth_methods import register_new, auth_user
 from databases.engine import engine, get_async_db
 
 app = FastAPI()
@@ -19,17 +19,29 @@ app.add_middleware(
 )
 
 @app.post("/auth")
-async def authenticate(auth_request: AuthRequest):
-    if auth_request.username == "testuser" and auth_request.password == "Testpass123":
-        now_time = round(datetime.now().timestamp())
+async def authenticate(auth_request: AuthRequest, db = Depends(get_async_db)):
+    now_time = round(datetime.now().timestamp())
+    try:
+        user = await auth_user(auth_request.username, auth_request.password, db)
+    except UserNotFoundError:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+    except WrongPasswordError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Wrong password or login"
+        )
+    if user:
         return {
             "access_token": f"access_token_{now_time}",
             "refresh_token": f"refresh_token_{now_time}"
         }
     else:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found"
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Iternal server error"
         )
     
 @app.post("/register")

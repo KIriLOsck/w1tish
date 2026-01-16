@@ -2,7 +2,7 @@ from databases.models import usersBase
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import select
 from hashlib import sha256
-from errors import UserExistError
+from errors import UserExistError, UserNotFoundError
 
 async def register_new(username: str, email: str, password: str, session) -> None:
     try:
@@ -26,5 +26,12 @@ async def check_user(username: str, session) -> bool:
         )
     )
     user = query.scalar_one_or_none()
-    print(user)
     return user if user is not None else None
+
+async def auth_user(username: str, password: str, session) -> bool:
+    user = await check_user(username, session)
+    if user is None:
+        raise UserNotFoundError()
+    if user.password_hash == sha256(password.encode()).hexdigest():
+        return user
+    return False
