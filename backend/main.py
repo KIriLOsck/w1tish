@@ -1,9 +1,12 @@
-from fastapi import FastAPI, HTTPException, Request, status
+from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
-from errors import UserExistError
 from datetime import datetime
+
+from errors import UserExistError
 from models import AuthRequest, RegisterRequest, ResponseData, RefreshTokens
+
 from auth_methods import register_new
+from databases.engine import engine, get_async_db
 
 app = FastAPI()
 
@@ -30,12 +33,16 @@ async def authenticate(auth_request: AuthRequest):
         )
     
 @app.post("/register")
-async def register(register_request: RegisterRequest):
+async def register(
+        register_request: RegisterRequest, 
+        db = Depends(get_async_db)
+    ):
     try:
         await register_new(
             register_request.username,
             register_request.email,
-            register_request.password
+            register_request.password,
+            db
         )
     except UserExistError:
         raise HTTPException(
