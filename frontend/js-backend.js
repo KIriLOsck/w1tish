@@ -48,12 +48,10 @@ async function getProtectedData(token) {
         body: JSON.stringify({ token })
     });
 
-    if (response.status === 401) {
+    if (response.status === 401 || response.status === 422) {
         console.log("Нужно обновить токен (refresh)");
     // Здесь вызывается функция обновления токена через куку
         refreshToken(localStorage.getItem("refresh_token"))
-    } else if (response.status === 422) {
-        console.log("Виноват фронтендер")
     } else if (response.status === 500) {
         console.log("Виноват бэкэндер")
     } else {
