@@ -2,11 +2,15 @@ from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
 from datetime import datetime
 
-from errors import UserExistError, UserNotFoundError, WrongPasswordError
+from errors import UserExistError, UserNotFoundError, WrongPasswordError, InvalidAccessToken
 from models import AuthRequest, RegisterRequest, ResponseData, RefreshTokens
 
-from auth_methods import register_new, auth_user
+from databases.auth_methods import register_new, auth_user
+from databases.data_methods import get_user_data
 from databases.engine import engine, get_async_db
+from token_generator import generate_tokens, refresh_tokens, validate_token, cipher
+
+
 
 app = FastAPI()
 
@@ -18,9 +22,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.post("/auth")
-async def authenticate(auth_request: AuthRequest, db = Depends(get_async_db)):
-    now_time = round(datetime.now().timestamp())
+async def authentificate(auth_request: AuthRequest, db = Depends(get_async_db)):
     try:
         user = await auth_user(auth_request.username, auth_request.password, db)
     except UserNotFoundError:
@@ -34,23 +38,18 @@ async def authenticate(auth_request: AuthRequest, db = Depends(get_async_db)):
             detail="Wrong password or login"
         )
     if user:
-        return {
-            "access_token": f"access_token_{now_time}",
-            "refresh_token": f"refresh_token_{now_time}"
-        }
+        return await generate_tokens(user.id)
     else:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Iternal server error"
         )
     
+
 @app.post("/register")
-async def register(
-        register_request: RegisterRequest, 
-        db = Depends(get_async_db)
-    ):
+async def register(register_request: RegisterRequest, db = Depends(get_async_db)):
     try:
-        await register_new(
+        user_id = await register_new(
             register_request.username,
             register_request.email,
             register_request.password,
@@ -61,25 +60,34 @@ async def register(
             status_code=status.HTTP_409_CONFLICT,
             detail="User already exists"
         )
-
-@app.post("/user/data")
-async def get_user_data(token: ResponseData):
-    if token.token.startswith("access_token_"):
-        if int(token.token[-10:]) + 60 > datetime.now().timestamp():
-            return {
-                "username": "PubertatUser3001",
-                "avatar_url": "https://i.pinimg.com/originals/1b/76/e5/1b76e560086418af972c33ae6369b163.jpg"
-            }
-        else:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Token expired"
-            )
+    
+    if user_id:
+        return await generate_tokens(user_id)
     else:
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
-            detail="Invalid token format"
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal server error"
         )
+
+
+@app.post("/user/data")
+async def get_user_data_by_token(token: ResponseData, db = Depends(get_async_db)):
+    try:
+        is_token_valid = await validate_token(token.access_token)
+    except InvalidAccessToken:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="Invalid access token"
+        )
+    if is_token_valid is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Access token expired"
+        )
+    else:
+        return await get_user_data(is_token_valid, db)
+        
+
 
 @app.post("/update_token")
 async def update_token(token: RefreshTokens):

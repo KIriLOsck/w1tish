@@ -17,6 +17,14 @@ class usersBase(Base):
     password_hash = Column(String, nullable=False)
     email = Column(String, unique=True, index=True, nullable=False)
 
+class usersDataBase(Base):
+    __tablename__ = "users_data"
+    
+    id = Column(Integer, nullable=False, primary_key=True, index=True)
+    username = Column(String, nullable=False)
+    avatar_url = Column(String, nullable=True)
+    chats = Column(String, nullable=True)
+
 
 # -> pass & login (/auth) 200(новые токены) 422(виноват фронтэндер) 404(виноват пользователь) 500(виноват бэкэндер)
 # -> access (/get_user_data) 200(данные пользователя) 401(токен устарел) 422(виноват фронтендер) 500(виноват бэкэндер)
