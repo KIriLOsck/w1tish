@@ -1,9 +1,9 @@
-from databases.models import usersBase, usersDataBase
+from databases.data_base.models import usersBase, usersDataBase
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import select
 from hashlib import sha256
 from errors import UserExistError, UserNotFoundError, WrongPasswordError
-from databases.data_methods import add_user_data
+from databases.data_base.data_methods import add_user_data
 
 async def register_new(username: str, email: str, password: str, session) -> None:
     try:

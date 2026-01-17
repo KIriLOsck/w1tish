@@ -4,13 +4,24 @@ services:
     image: postgres:17
     volumes:
       - "./init.sql:/docker-entrypoint-initdb.d/init.sql:ro"
-      - "./data/postgres_data:/var/lib/postgresql/data"
+      - "./data/postgres/postgres_data:/var/lib/postgresql/data"
     environment:
       POSTGRES_DB: users_db
       POSTGRES_USER: ${DB_USER:-admin}
       POSTGRES_PASSWORD: ${DB_PASS:-admin}
     ports:
       - "5432:5432"
+
+  messagesbase:
+    image: mongo:latest
+    container_name: messages_db
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${DB_USER:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${DB_PASS:-admin}
+    volumes:
+      - "./data/mongo/mongo_data:/data/db"
 
   backend:
     build: backend/.
@@ -29,3 +40,4 @@ services:
 
 volumes:
   postgres_data:
+  mongo_data:

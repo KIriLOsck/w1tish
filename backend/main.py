@@ -1,13 +1,12 @@
 from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
-from datetime import datetime
 
 from errors import UserExistError, UserNotFoundError, WrongPasswordError, InvalidTokenError
 from models import AuthRequest, RegisterRequest, ResponseData, RefreshTokens
 
-from databases.auth_methods import register_new, auth_user
-from databases.data_methods import get_user_data
-from databases.engine import engine, get_async_db
+from databases.data_base.auth_methods import register_new, auth_user
+from databases.data_base.data_methods import get_user_data
+from databases.data_base.engine import engine, get_async_db
 from token_generator import create_tokens, refresh_tokens, validate_token, cipher
 
 

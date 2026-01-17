@@ -1,4 +1,4 @@
-from databases.models import usersDataBase
+from databases.data_base.models import usersDataBase
 from sqlalchemy import select
 from errors import UserNotFoundError
 from sqlalchemy.exc import IntegrityError

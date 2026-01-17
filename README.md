@@ -3,7 +3,7 @@
 **Prerequisites**:
 - **macOS / Linux**: `git`, `docker` (или `docker-engine`) и `docker-compose` (или Docker Desktop).
 - **Windows**: Docker Desktop (рекомендуется) или Docker Engine + Docker Compose, и `git`.
-- **Python** (для локальной разработки бекенда): Python 3.10+ (проверяйте `python --version`).
+- **Python** (для локальной разработки бекенда): Python 3.12+ (проверяйте `python --version`).
 
 **Quick start (Docker, кросс-платформенно)**
 
@@ -16,7 +16,7 @@ cd w1tish
 
 2. Убедитесь, что Docker (или Docker Desktop) запущен.
 
-3. Поднять сервисы:
+3. Поднимите сервисы:
 
 ```bash
 docker-compose up --build
@@ -57,7 +57,7 @@ source .venv/bin/activate
 pip install --upgrade pip
 pip install -r requirements.txt
 # Запуск сервера
-uvicorn main:app --reload --host 127.0.0.1 --port 8000
+uvicorn main:app --reload --port 8000
 ```
 
 3. Windows (PowerShell):
@@ -91,8 +91,8 @@ macOS / Linux / Windows (через Python):
 
 ```bash
 cd frontend
-python3 -m http.server 8080
-# затем открыть http://localhost:8080
+python3 -m http.server 80
+# затем открыть http://localhost/
 ```
 
 Или использовать любой статический сервер / live-reload плагин в редакторе.
