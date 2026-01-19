@@ -1,55 +1,100 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Security
+from fastapi.security.api_key import APIKeyHeader
 
 from backend.databases.messages_base.engine import get_messages_collection
-from backend.databases.data_base.data_methods import get_user_data
+from backend.databases.data_base.data_methods import get_user_data, add_chat
 from backend.databases.messages_base.methods import add_messages, get_messages_by_chat
 from backend.databases.data_base.engine import get_async_db
 
 from backend.utils.token_generator import get_userid_by_token
-from backend.models import ResponseData
-from backend.errors import InvalidMessagesError, InvalidTokenError, ExpiredTokenError
+from backend.models import ChatCreateModel
+from backend.errors import (
+    InvalidMessagesError,
+    InvalidTokenError,
+    ExpiredTokenError,
+    NoReadPermissionError,
+    NoWritePermissionError
+)
 
+api_key_header = APIKeyHeader(name="Access-Token", auto_error=False)
 
-data_router = APIRouter(prefix="/data")
-
-@data_router.post("/user")
-async def get_user_data_by_token(token: ResponseData, db = Depends(get_async_db)):
+async def get_userid_from_header(token: str = Security(api_key_header)):
     try:
-        user_id = await get_userid_by_token(token.token)
-
+        return await get_userid_by_token(token)
+    
     except InvalidTokenError:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
-            detail="Invalid access token"
+            detail="Invalid token"
         )
     except ExpiredTokenError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Access token expired"
+            detail="Token expired"
         )
-    else:
-        return await get_user_data(user_id, db)
+
+data_router = APIRouter(prefix="/data")
+
+@data_router.post("/user")
+async def get_user_data_by_token(
+    user_id = Depends(get_userid_from_header),
+    db = Depends(get_async_db)
+):
+    return await get_user_data(user_id, db)
 
 
-@data_router.post("/messages/add")  # TODO добавить аутентификацию
-async def add_new_messages(messages: list[dict], collection = Depends(get_messages_collection)):
+@data_router.post("/messages/add", status_code=status.HTTP_201_CREATED)
+async def add_new_messages(
+    messages: list[dict],
+    user_id = Depends(get_userid_from_header),
+    session = Depends(get_async_db),
+    collection = Depends(get_messages_collection)
+):
     try:
-        await add_messages(messages, collection)
+        await add_messages(user_id, messages, session, collection)
     except InvalidMessagesError:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             detail="Invalid messages format"
         )
+    except NoWritePermissionError as e:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=f"Error chat: {e.error_message.get("chat_id")}"
+        )
     return {"detail": "Messages added successfully"}
 
-@data_router.get("/messages/{chat_id}") # TODO добавить аутентификацию
+@data_router.get("/messages/{chat_id}")
 async def get_messages(
     chat_id: str,
     limit: int = 50,
     offset: int = 0,
+    user_id = Depends(get_userid_from_header),
+    session = Depends(get_async_db),
     collection = Depends(get_messages_collection)
 ):
-    messages = await get_messages_by_chat(chat_id, collection, limit, offset)
+    try:
+        messages = await get_messages_by_chat(user_id, chat_id, collection, session, limit, offset)
+    except NoReadPermissionError:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="User has no permission to read this"
+        )
     return {"messages": messages}
+
+@data_router.post("/chats/add", status_code=status.HTTP_201_CREATED)
+async def create_new_chat(
+    chat: ChatCreateModel,
+    user_id = Depends(get_userid_from_header),
+    session = Depends(get_async_db)
+):
+    try:
+        await add_chat(user_id, chat.chat_id, session)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e)
+        )
+
 
 # TODO добавить доставку сообщений в реальном времени через WebSocket

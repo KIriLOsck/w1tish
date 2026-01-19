@@ -15,3 +15,14 @@ class InvalidMessagesError(BaseException):
 
 class ExpiredTokenError(BaseException):
     pass
+
+class NoPermissionError(BaseException):
+    pass
+
+class NoWritePermissionError(NoPermissionError):
+    def __init__(self, message: dict):
+        super().__init__()
+        self.error_message = message
+
+class NoReadPermissionError(NoPermissionError):
+    pass

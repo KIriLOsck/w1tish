@@ -9,5 +9,5 @@ class RegisterRequest(BaseModel):
     password: str
     email: str
 
-class ResponseData(BaseModel):
-    token: str
+class ChatCreateModel(BaseModel):
+    chat_id: str
