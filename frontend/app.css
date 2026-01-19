@@ -14,22 +14,14 @@ body {
     font-family: Inter;
     display: flex;
     flex-direction: row;
-    padding: 15px 15px 15px 15px;
+    padding: 1% 1% 1% 1%;
     border-radius: 25px;
-    width: 97vw;
+    width: 96vw;
     justify-self: center;
     background-color: #9D9D9D;
-    height: 95vh;
+    height: 93vh;
     align-self: center;
 }
-
-#view_container {
-    width: 20%;
-    display: flex;
-    margin-right: 15px;
-    justify-content: space-between;
-}
-
 
 #contacts, #view_container {
     display: flex;
@@ -37,13 +29,17 @@ body {
     
 }
 
+#view_container {
+    width: 20%;
+    margin-right: 15px;
+    justify-content: space-between;
+}
+
 #contacts {
     width: 100%;
     max-height: 100%;
     overflow: hidden;
     overflow-y: scroll;
-    display: flex;
-    flex-direction: column;
     gap: 20px;
     scrollbar-width: thin;
     padding-right: 15px;
@@ -124,10 +120,14 @@ p {
 }
 
 
-.oponent {
+.oponent_header {
+    margin-top: 10px;
+    margin-left: 10px;
+    width: max-content;
+    background-color: #9D9D9D;
+    border-radius: 35px;
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
     align-items: center;
     justify-content: flex-start;
     padding-left: 30px;
@@ -135,10 +135,56 @@ p {
     padding-bottom: 15px;
     padding-right: 30px;
     gap: 10px;
+    margin-bottom: 10px;
 }
 
+
+
+#chat {
+    display: flex;
+    height: 100%;
+    flex-flow: column nowrap;
+    justify-content: flex-end;
+    max-height: 100%;
+    overflow: hidden;
+}
+
+#chat_for_oponent {
+    display: flex;
+    flex-flow: column nowrap;
+    width: 100%;
+    max-height: 100%;
+    overflow: hidden;
+    overflow-y: auto;
+    gap: 10px;
+    scrollbar-width: thin;
+    
+}
+
+.message {
+    align-self: flex-start;
+    background-color: #9D9D9D;
+    border-radius: 15px;
+    padding: 10px 10px 10px 10px;
+    margin: 10px 10px 10px 10px;
+    width: max-content;
+    max-width: 50%;
+}
+
+.user {
+    border-bottom-right-radius: 0px;
+    align-self: flex-end;
+}
+
+.oponent {
+    border-bottom-left-radius: 0px;
+}
 #send {
-    height: 32px;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    padding: 5px 15px 5px 15px;
+    min-height: 32px;
     width: auto;
     border-radius: 30px;
     background-color: #ffffff;
@@ -146,4 +192,17 @@ p {
     margin-top: 10px;
     margin-left: 10px;
     margin-right: 10px;
+}
+
+#send_message {
+    font-size: 12pt;
+    width: 100%;
+    max-width: 100%;
+    word-break: normal;
+}
+
+#send_message, #send_message:focus {
+    border-color: #FFFFFF;
+    border-width: 0px;
+    outline: #FFFFFF;
 }

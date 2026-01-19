@@ -8,9 +8,9 @@
     <!-- <script src="js.js"></script>
     <script src="start-js.js"></script>
     <script src="js-backend.js"></script> -->
-    <script>
+    <!-- <script>
         getProtectedData();
-    </script>
+    </script> -->
 </head>
 <body>
     <div id="main_container">
@@ -141,16 +141,31 @@
             </div>
         </div>
         <div id="chat_container">
-            <div class="oponent">
+            <div class="oponent_header">
                 <img src="" alt="logo_oponent" class="logo logo_oponent">
                 <div class="oponent_info">
                     <p class="oponent_name">tralalelo</p>
                     <p class="state_oponent">Был(а) недавно</p>
                 </div>
             </div>
-            <div id="chat_for_oponent"></div>
-            <div id="send"></div>
+            <div id="chat">
+                <div id="chat_for_oponent">
+                    <div class="user message">Привет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленьку</div>
+                    <div class="oponent message">Привет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленьку</div>
+                    <div class="oponent message">Привет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленьку</div>
+                    <div class="oponent message">Привет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленьку</div>
+                </div>
+            </div>
+            <div id="send">
+                <textarea name="" id="send_message" placeholder="Сообщение..." maxlength="1000" rows="1"></textarea>
+                <img src="" alt="send" class="logo">
+            </div>
         </div>
     </div>
+<script>
+    /*При создании чата в конце функции использовать эту команду*/
+    document.getElementById('chat_for_oponent').scrollIntoView(true);
+</script>
 </body>
+
 </html>
