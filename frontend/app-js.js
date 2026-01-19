@@ -1,0 +1,1 @@
+document.querySelector('#chat_for_oponent').scrollTop = messageBody.scrollHeight - messageBody.clientHeight;
