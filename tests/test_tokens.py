@@ -1,7 +1,7 @@
 import pytest
 from time import sleep
-from backend.utils.token_generator import generate_tokens, validate_token, refresh_tokens
-from backend.errors import InvalidTokenError
+from backend.utils.token_generator import generate_tokens, get_userid_by_token, refresh_tokens
+from backend.errors import InvalidTokenError, ExpiredTokenError
 
 @pytest.mark.asyncio
 async def test_generate_token():
@@ -13,16 +13,21 @@ async def test_generate_token():
 async def test_validate_token():
     user_id = 52
     tokens = generate_tokens(user_id, 1, 1)         # access time & refresh time in seconds
-    assert await validate_token(tokens.get("access_token")) == user_id
-    assert await validate_token(tokens.get("refresh_token")) == user_id
+    assert await get_userid_by_token(tokens.get("access_token")) == user_id
+    assert await get_userid_by_token(tokens.get("refresh_token")) == user_id
 
-    sleep(1.1)
+    sleep(1.2)
 
-    assert await validate_token(tokens.get("access_token", "None")) is None
-    assert await validate_token(tokens.get("refresh_token", "None")) is None
+    with pytest.raises(ExpiredTokenError) as err:
+        await get_userid_by_token(tokens.get("access_token"))
+    assert err.type == ExpiredTokenError
+    
+    with pytest.raises(ExpiredTokenError) as err:
+        await get_userid_by_token(tokens.get("refresh_token"))
+    assert err.type == ExpiredTokenError
     
     with pytest.raises(InvalidTokenError) as err:
-        await validate_token("Invalid token")
+        await get_userid_by_token("Invalid token")
 
     assert err.type == InvalidTokenError
 
@@ -36,5 +41,5 @@ async def test_refresh_tokens():
     assert err.type == InvalidTokenError
 
     new_tokens = await refresh_tokens(tokens.get("refresh_token"))
-    assert await validate_token(new_tokens.get("access_token")) == user_id
+    assert await get_userid_by_token(new_tokens.get("access_token")) == user_id
     

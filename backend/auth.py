@@ -1,26 +1,27 @@
-from fastapi import APIRouter, HTTPException, Depends, status
+from fastapi import APIRouter, HTTPException, Depends, Response, status, Cookie
 from backend.databases.data_base.engine import get_async_db
 from backend.databases.data_base.auth_methods import register_new, auth_user
 from backend.utils.token_generator import create_tokens, refresh_tokens
+from typing import Annotated
 
 from backend.models import (
     AuthRequest,
-    RegisterRequest,
-    RefreshTokens
+    RegisterRequest
 )
 
 from backend.errors import (
     UserExistError,
     UserNotFoundError,
     WrongPasswordError,
-    InvalidTokenError
+    InvalidTokenError,
+    ExpiredTokenError
 )
 
 print("creating router...")
 auth_router = APIRouter(prefix="/api")
 
 @auth_router.post("/auth")
-async def authentificate(auth_request: AuthRequest, db = Depends(get_async_db)):
+async def authentificate(auth_request: AuthRequest, response: Response, db = Depends(get_async_db)):
     try:
         user = await auth_user(auth_request.username, auth_request.password, db)
     except UserNotFoundError:
@@ -34,7 +35,15 @@ async def authentificate(auth_request: AuthRequest, db = Depends(get_async_db)):
             detail="Wrong password or login"
         )
     if user:
-        return await create_tokens(user.id)
+        tokens = await create_tokens(user.id)
+        response.set_cookie(
+            key="refresh_token",
+            value=tokens.get("refresh_token"),
+            httponly=True,
+            path="/api/refresh",
+            max_age=604800 # 7 дней
+        )
+        return {"access_token": tokens.get("access_token")}
     else:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -42,8 +51,8 @@ async def authentificate(auth_request: AuthRequest, db = Depends(get_async_db)):
         )
     
 
-@auth_router.post("/register")
-async def register(register_request: RegisterRequest, db = Depends(get_async_db)):
+@auth_router.post("/register", status_code=status.HTTP_201_CREATED)
+async def register(register_request: RegisterRequest, response: Response, db = Depends(get_async_db)):
     try:
         user_id = await register_new(
             register_request.username,
@@ -58,7 +67,15 @@ async def register(register_request: RegisterRequest, db = Depends(get_async_db)
         )
     
     if user_id:
-        return await create_tokens(user_id)
+        tokens = await create_tokens(user_id)
+        response.set_cookie(
+            key="refresh_token",
+            value=tokens.get("refresh_token"),
+            httponly=True,
+            path="/api/refresh",
+            max_age=604800 # 7 дней
+        )
+        return {"access_token": tokens.get("access_token")}
     else:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -67,19 +84,25 @@ async def register(register_request: RegisterRequest, db = Depends(get_async_db)
         
 
 @auth_router.post("/update_token")
-async def update_token(token: RefreshTokens):
+async def update_token(response: Response, refresh_token: Annotated[str | None, Cookie()]):
     try:
-        is_token_valid = await refresh_tokens(token.token)
+        tokens = await refresh_tokens(refresh_token)
+        response.set_cookie(
+            key="refresh_token",
+            value=tokens.get("refresh_token"),
+            httponly=True,
+            path="/api/refresh",
+            max_age=604800 # 7 дней
+        )
+        return {"access_token": tokens.get("access_token")}
+    
     except InvalidTokenError:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             detail="Invalid refresh token"
         )
-    if is_token_valid is None:
+    except ExpiredTokenError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Refresh token expired"
         )
-    else:
-        return await refresh_tokens(token.token)
-    

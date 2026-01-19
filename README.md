@@ -134,4 +134,3 @@ docker-compose logs backend
 # Подключиться к запущенному контейнеру
 docker exec -it <container_id_or_name> /bin/sh
 ```
-

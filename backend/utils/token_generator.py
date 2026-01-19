@@ -2,7 +2,7 @@ from asyncio import get_running_loop
 from cryptography.fernet import Fernet, InvalidToken
 from os import getenv
 from json import loads, dumps, JSONDecodeError
-from backend.errors import InvalidTokenError
+from backend.errors import InvalidTokenError, ExpiredTokenError
 from concurrent.futures import ProcessPoolExecutor
 from datetime import datetime
 
@@ -34,6 +34,9 @@ async def refresh_tokens(refresh_token: str) -> dict | None:
     except (JSONDecodeError, InvalidToken):
         raise InvalidTokenError()
     
+    if decrypted_token.get("expires_at") <= int(datetime.now().timestamp()):
+        raise ExpiredTokenError()
+    
     return await loop.run_in_executor(
         _executor,
         generate_tokens,
@@ -41,7 +44,7 @@ async def refresh_tokens(refresh_token: str) -> dict | None:
     )
 
 
-async def validate_token(token: str) -> int | None:
+async def get_userid_by_token(token: str) -> int | None:
     loop = get_running_loop()
     try:
         decrypted_token = await loop.run_in_executor(
@@ -55,7 +58,7 @@ async def validate_token(token: str) -> int | None:
         raise InvalidTokenError()
     
     if decrypted_token.get("expires_at") <= int(datetime.now().timestamp()):
-        return None
+        raise ExpiredTokenError()
     
     return decrypted_token.get("userid")
 

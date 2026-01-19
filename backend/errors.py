@@ -12,3 +12,6 @@ class InvalidTokenError(BaseException):
 
 class InvalidMessagesError(BaseException):
     pass
+
+class ExpiredTokenError(BaseException):
+    pass

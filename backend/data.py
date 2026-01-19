@@ -5,9 +5,9 @@ from backend.databases.data_base.data_methods import get_user_data
 from backend.databases.messages_base.methods import add_messages, get_messages_by_chat
 from backend.databases.data_base.engine import get_async_db
 
-from backend.utils.token_generator import validate_token
+from backend.utils.token_generator import get_userid_by_token
 from backend.models import ResponseData
-from backend.errors import InvalidMessagesError, InvalidTokenError
+from backend.errors import InvalidMessagesError, InvalidTokenError, ExpiredTokenError
 
 
 data_router = APIRouter(prefix="/data")
@@ -15,19 +15,20 @@ data_router = APIRouter(prefix="/data")
 @data_router.post("/user")
 async def get_user_data_by_token(token: ResponseData, db = Depends(get_async_db)):
     try:
-        is_token_valid = await validate_token(token.token)
+        user_id = await get_userid_by_token(token.token)
+
     except InvalidTokenError:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             detail="Invalid access token"
         )
-    if is_token_valid is None:
+    except ExpiredTokenError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Access token expired"
         )
     else:
-        return await get_user_data(is_token_valid, db)
+        return await get_user_data(user_id, db)
 
 
 @data_router.post("/messages/add")  # TODO добавить аутентификацию

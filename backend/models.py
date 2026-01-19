@@ -11,6 +11,3 @@ class RegisterRequest(BaseModel):
 
 class ResponseData(BaseModel):
     token: str
-
-class RefreshTokens(BaseModel):
-    token: str
