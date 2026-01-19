@@ -1,4 +1,4 @@
-name: Build
+name: Unit
 
 on: [push, pull_request]
 
@@ -6,9 +6,7 @@ jobs:
   test_build:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-    - name: Create .env file for CI
+    - name: Create .env file
       run: |
         cat > .env << EOF
         JWT_SECRET=iWjwGUtt-DUeNb_QU8Oypc4jUZJX_FQflzpDzQTF9vA=
@@ -23,6 +21,8 @@ jobs:
         docker-compose up -d --build
         docker-compose ps
         sleep 15
+    - name: Unit tests
+      run: docker-compose exec app python -m pytest tests/
     - name: Stop services
       if: always()
       run: docker-compose down -v

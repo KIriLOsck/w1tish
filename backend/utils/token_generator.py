@@ -54,24 +54,24 @@ async def validate_token(token: str) -> int | None:
     except (JSONDecodeError, InvalidToken):
         raise InvalidTokenError()
     
-    if decrypted_token.get("expires_at") < int(datetime.now().timestamp()):
+    if decrypted_token.get("expires_at") <= int(datetime.now().timestamp()):
         return None
     
     return decrypted_token.get("userid")
 
 
-def generate_tokens(id):
+def generate_tokens(id, access_time: int = 900, refresh_time: int = 604800):
     now_time = int(datetime.now().timestamp())
     
     raw_access_token = {
         "userid": id,
-        "expires_at": now_time + 900 # 15 минут
+        "expires_at": now_time + access_time
     }
     access_token = cipher.encrypt(dumps(raw_access_token).encode())
 
     raw_refresh_token = {
         "userid": id,
-        "expires_at": now_time + 604800 # 7 дней
+        "expires_at": now_time + refresh_time
     }
     refresh_token = cipher.encrypt(dumps(raw_refresh_token).encode())
 
