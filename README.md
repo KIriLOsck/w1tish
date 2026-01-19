@@ -1,4 +1,6 @@
-![CI](https://github.com/KIriLOsck/w1tish/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/KIriLOsck/w1tish/actions/workflows/build.yml/badge.svg)
+![CI](https://github.com/KIriLOsck/w1tish/actions/workflows/unit.yml/badge.svg)
+
 # w1tish
 
 **Prerequisites**:

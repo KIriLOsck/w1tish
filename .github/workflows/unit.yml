@@ -3,7 +3,7 @@ name: Unit
 on: [push, pull_request]
 
 jobs:
-  test_build:
+  test_unit:
     runs-on: ubuntu-latest
     steps:
     - name: Create .env file
