@@ -21,6 +21,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/health")
+async def status():
+    return {"status":"ok"}
+
 app.mount("/", StaticFiles(directory="frontend", html=True), name="static")
 
 print("Application started")

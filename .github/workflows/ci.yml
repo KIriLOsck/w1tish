@@ -1,0 +1,41 @@
+name: FastAPI CI with Docker
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Create .env file for CI
+      run: |
+        cat > .env << EOF
+        JWT_SECRET=iWjwGUtt-DUeNb_QU8Oypc4jUZJX_FQflzpDzQTF9vA=
+        EOF
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Start services with Docker Compose
+      run: |
+        docker-compose up -d --build
+        docker-compose ps
+        
+        until docker-compose exec postgres pg_isready -U admin; do
+          sleep 5
+        done
+
+        until docker-compose exec mongodb mongosh --eval "db.runCommand('ping').ok" --quiet; do
+          sleep 5
+        done
+
+        until docker-compose exec fastapi-app curl -s -f http://localhost:80/health > /dev/null; do
+          sleep 5
+        done
+
+    - name: Stop services
+      if: always()
+      run: docker-compose down -v
