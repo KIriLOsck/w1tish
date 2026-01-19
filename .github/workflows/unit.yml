@@ -6,6 +6,8 @@ jobs:
   test_unit:
     runs-on: ubuntu-latest
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
     - name: Create .env file
       run: |
         cat > .env << EOF
@@ -22,7 +24,8 @@ jobs:
         docker-compose ps
         sleep 15
     - name: Unit tests
-      run: docker-compose exec app python -m pytest tests/
+      run: |
+        docker-compose exec app python -m pytest tests/
     - name: Stop services
       if: always()
       run: docker-compose down -v
