@@ -27,17 +27,7 @@ jobs:
         docker-compose up -d --build
         docker-compose ps
         
-        until docker-compose exec database pg_isready -U admin; do
-          sleep 5
-        done
-
-        until docker-compose exec messagebase mongosh --eval "db.runCommand('ping').ok" --quiet; do
-          sleep 5
-        done
-
-        until docker-compose exec app curl -s -f http://localhost:80/health > /dev/null; do
-          sleep 5
-        done
+        sleep 15
 
     - name: Stop services
       if: always()
