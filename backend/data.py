@@ -13,7 +13,8 @@ from backend.errors import (
     InvalidTokenError,
     ExpiredTokenError,
     NoReadPermissionError,
-    NoWritePermissionError
+    NoWritePermissionError,
+    UserNotFoundError
 )
 
 api_key_header = APIKeyHeader(name="Access-Token", auto_error=False)
@@ -34,11 +35,26 @@ async def get_userid_from_header(token: str = Security(api_key_header)):
 
 data_router = APIRouter(prefix="/data")
 
-@data_router.get("/user")
-async def get_user_data_by_token(
-    user_id = Depends(get_userid_from_header),
+@data_router.get("/user/{user_id}")
+async def get_user_data_by_id(
+    user_id: int,
     db = Depends(get_async_db)
-):
+):  
+    try:
+        data = await get_user_data(user_id, db)
+        return {
+            "nickname": data.nickname,
+            "avatar_url": data.avatar_url,
+            "id": data.id
+        }
+    except UserNotFoundError:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="user not found"
+        )
+    
+@data_router.get("/")
+async def get_self_data(user_id = Depends(get_userid_from_header), db = Depends(get_async_db)):
     return await get_user_data(user_id, db)
 
 
@@ -87,10 +103,10 @@ async def create_new_chat(
     user_id = Depends(get_userid_from_header),
     session = Depends(get_async_db)
 ):  
-    if len(chat.members) > 7 or len(chat.members) < 2:
+    if len(chat.members) > 7 or len(chat.members) < 1:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid members count. Allowed 2 - 7"
+            detail="Invalid members count. Allowed 1 - 7"
         )
     try:
         chat_id = await add_chat(user_id, chat.members, session)

@@ -47,8 +47,9 @@ async def add_chat(user_id: int, members_ids: int, session: AsyncSession) -> Non
     stmt = (
         update(usersDataBase)
         .where(usersDataBase.id == user_id)
-        .values(chats=usersDataBase.chats.concat({str(new_chat.id): "admin"}))
+        .values(chats=usersDataBase.chats.concat({str(new_chat.id): {"permission":"write", "last_message":"bebeih rebeboy", "ids": [1, 2, 3]}}))
     )
+    
     await session.execute(stmt) 
     await session.commit()
     
