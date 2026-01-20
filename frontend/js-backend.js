@@ -5,7 +5,7 @@ async function register_user(username, email, password) {
         body: JSON.stringify({ username, email, password })
     });
     
-    if (response.status === 200) {
+    if (response.status === 201) {
 
         const data = await response.json();
         localStorage.setItem("accessToken", data.access_token);
@@ -39,7 +39,6 @@ async function login(username, password) {
         const data = await response.json();
         localStorage.setItem("accessToken", data.access_token);
         localStorage.setItem("refreshToken", data.refresh_token);
-
         window.location.replace("app.html");
     } else { //TODO обработай 401 (неправильный логин или пароль)
         console.log("Error", response.status)
@@ -50,10 +49,10 @@ async function getProtectedData() {
     const accessToken = localStorage.getItem("accessToken");
     if (refreshToken != null) {
 
-        const response = await fetch('http://localhost/data/user', {
-            method: "POST",
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 'token': accessToken })
+        const response = await fetch('http://localhost/data/', {
+            method: "GET",
+            headers: {  'Content-Type': 'application/json', 
+                        'Access-Token': accessToken}
         });
 
         if (response.status === 401 || response.status === 422) { 
@@ -65,7 +64,11 @@ async function getProtectedData() {
 
         } else {
             const data = await response.json();
-            console.log(data);
+            console.log(data)
+            localStorage.setItem("nickname", data.nickname);
+            localStorage.setItem("avatar", data.avatar_url);
+            localStorage.setItem("chats", data.chats);  
+            if (window.location.pathname == "/app.html") load_contacts_and_profile();
         }
     } else {
         await refreshToken();
@@ -81,7 +84,7 @@ async function refreshToken() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 'token': refreshToken })
         });
-
+        console.log(response.status)
         if (response.status === 200) {
             const data = await response.json();
             localStorage.setItem("accessToken", data.access_token);

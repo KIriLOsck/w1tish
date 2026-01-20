@@ -5,12 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="app.css">
-    <!-- <script src="js.js"></script>
+    <script src="js.js"></script>
     <script src="start-js.js"></script>
-    <script src="js-backend.js"></script> -->
-    <!-- <script>
-        getProtectedData();
-    </script> -->
+    <script src="app-js.js"></script>
+    <script src="js-backend.js"></script>
+    <script>getProtectedData()</script>
 </head>
 <body>
     <div id="main_container">
@@ -23,117 +22,12 @@
                     </div>
                     <div class="view_message">tralalelo tralala</div>
                 </div>
-                <div class="contact">
-                    <div class="view_contact">
-                        <img src="" alt="logo" class="logo_contact">
-                        <p class="name_contact">tralalelo</p>
-                    </div>
-                    <div class="view_message">tralalelo tralala</div>
-                </div>
-                <div class="contact">
-                    <div class="view_contact">
-                        <img src="" alt="logo" class="logo_contact">
-                        <p class="name_contact">tralalelo</p>
-                    </div>
-                    <div class="view_message">tralalelo tralala</div>
-                </div>
-                <div class="contact">
-                    <div class="view_contact">
-                        <img src="" alt="logo" class="logo_contact">
-                        <p class="name_contact">tralalelo</p>
-                    </div>
-                    <div class="view_message">tralalelo tralala</div>
-                </div>
-                <div class="contact">
-                    <div class="view_contact">
-                        <img src="" alt="logo" class="logo_contact">
-                        <p class="name_contact">tralalelo</p>
-                    </div>
-                    <div class="view_message">tralalelo tralala</div>
-                </div>
-                <div class="contact">
-                    <div class="view_contact">
-                        <img src="" alt="logo" class="logo_contact">
-                        <p class="name_contact">tralalelo</p>
-                    </div>
-                    <div class="view_message">tralalelo tralala</div>
-                </div>
-                <div class="contact">
-                    <div class="view_contact">
-                        <img src="" alt="logo" class="logo_contact">
-                        <p class="name_contact">tralalelo</p>
-                    </div>
-                    <div class="view_message">tralalelo tralala</div>
-                </div>
-                <div class="contact">
-                    <div class="view_contact">
-                        <img src="" alt="logo" class="logo_contact">
-                        <p class="name_contact">tralalelo</p>
-                    </div>
-                    <div class="view_message">tralalelo tralala</div>
-                </div>
-                <div class="contact">
-                    <div class="view_contact">
-                        <img src="" alt="logo" class="logo_contact">
-                        <p class="name_contact">tralalelo</p>
-                    </div>
-                    <div class="view_message">tralalelo tralala</div>
-                </div>
-                <div class="contact">
-                    <div class="view_contact">
-                        <img src="" alt="logo" class="logo_contact">
-                        <p class="name_contact">tralalelo</p>
-                    </div>
-                    <div class="view_message">tralalelo tralala</div>
-                </div>
-                <div class="contact">
-                    <div class="view_contact">
-                        <img src="" alt="logo" class="logo_contact">
-                        <p class="name_contact">tralalelo</p>
-                    </div>
-                    <div class="view_message">tralalelo tralala</div>
-                </div>
-                <div class="contact">
-                    <div class="view_contact">
-                        <img src="" alt="logo" class="logo_contact">
-                        <p class="name_contact">tralalelo</p>
-                    </div>
-                    <div class="view_message">tralalelo tralala</div>
-                </div>
-                <div class="contact">
-                    <div class="view_contact">
-                        <img src="" alt="logo" class="logo_contact">
-                        <p class="name_contact">tralalelo</p>
-                    </div>
-                    <div class="view_message">tralalelo tralala</div>
-                </div>
-                <div class="contact">
-                    <div class="view_contact">
-                        <img src="" alt="logo" class="logo_contact">
-                        <p class="name_contact">tralalelo</p>
-                    </div>
-                    <div class="view_message">tralalelo tralala</div>
-                </div>
-                <div class="contact">
-                    <div class="view_contact">
-                        <img src="" alt="logo" class="logo_contact">
-                        <p class="name_contact">tralalelo</p>
-                    </div>
-                    <div class="view_message">tralalelo tralala</div>
-                </div>
-                <div class="contact">
-                    <div class="view_contact">
-                        <img src="" alt="logo" class="logo_contact">
-                        <p class="name_contact">tralalelo</p>
-                    </div>
-                    <div class="view_message">tralalelo tralala</div>
-                </div>
             </div>
             <div id="profile">
                 <div class="user_view">
-                    <img src="" alt="logo_user" class="logo">
+                    <img src="" alt="logo_user" class="logo" id="logo_user">
                     <div class="user_info">
-                        <p>kirilosk</p>
+                        <p id="nickname">kirilosk</p>
                         <p>В сети</p>
                     </div>
                 </div>
@@ -142,30 +36,21 @@
         </div>
         <div id="chat_container">
             <div class="oponent_header">
-                <img src="" alt="logo_oponent" class="logo logo_oponent">
+                <img src="" alt="logo_oponent" class="logo logo_oponent" id="logo_oponent">
                 <div class="oponent_info">
-                    <p class="oponent_name">tralalelo</p>
+                    <p class="oponent_name" id="oponent_name">tralalelo</p>
                     <p class="state_oponent">Был(а) недавно</p>
                 </div>
             </div>
             <div id="chat">
                 <div id="chat_for_oponent">
-                    <div class="user message">Привет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленьку</div>
-                    <div class="oponent message">Привет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленьку</div>
-                    <div class="oponent message">Привет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленьку</div>
-                    <div class="oponent message">Привет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленькуПривет, живем по маленьку</div>
                 </div>
             </div>
             <div id="send">
                 <textarea name="" id="send_message" placeholder="Сообщение..." maxlength="1000" rows="1"></textarea>
-                <img src="" alt="send" class="logo">
+                <img src="" alt="send" class="logo" id="">
             </div>
         </div>
     </div>
-<script>
-    /*При создании чата в конце функции использовать эту команду*/
-    document.getElementById('chat_for_oponent').scrollIntoView(true);
-</script>
 </body>
-
 </html>
