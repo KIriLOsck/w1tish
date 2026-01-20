@@ -54,3 +54,16 @@ async def add_chat(user_id: int, members_ids: int, session: AsyncSession) -> Non
     await session.commit()
     
     return new_chat.id
+
+async def get_users_data_by_ids(ids, session: AsyncSession):
+    query = await session.execute(
+        select(usersDataBase.nickname, usersDataBase.avatar_url, usersDataBase.id).where(
+            usersDataBase.id.in_(ids)
+        )
+    )
+    
+    users_data = query.mappings().all()
+    if len(users_data) != len(set(ids)):
+        raise UserNotFoundError()
+        
+    return users_data

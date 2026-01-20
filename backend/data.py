@@ -2,12 +2,12 @@ from fastapi import APIRouter, Depends, HTTPException, status, Security
 from fastapi.security.api_key import APIKeyHeader
 
 from backend.databases.messages_base.engine import get_messages_collection
-from backend.databases.data_base.data_methods import get_user_data, add_chat
+from backend.databases.data_base.data_methods import get_user_data, add_chat, get_users_data_by_ids
 from backend.databases.messages_base.methods import add_messages, get_messages_by_chat
 from backend.databases.data_base.engine import get_async_db
 
 from backend.utils.token_generator import get_userid_by_token
-from backend.models import ChatCreateModel
+from backend.models import ChatCreateModel, GetUsersDataModel
 from backend.errors import (
     InvalidMessagesError,
     InvalidTokenError,
@@ -35,22 +35,17 @@ async def get_userid_from_header(token: str = Security(api_key_header)):
 
 data_router = APIRouter(prefix="/data")
 
-@data_router.get("/user/{user_id}")
+@data_router.post("/user/")
 async def get_user_data_by_id(
-    user_id: int,
+    users: GetUsersDataModel,
     db = Depends(get_async_db)
 ):  
     try:
-        data = await get_user_data(user_id, db)
-        return {
-            "nickname": data.nickname,
-            "avatar_url": data.avatar_url,
-            "id": data.id
-        }
+        return await get_users_data_by_ids(users.users_ids, db)
     except UserNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="user not found"
+            detail="User not found"
         )
     
 @data_router.get("/")

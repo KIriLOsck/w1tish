@@ -11,3 +11,6 @@ class RegisterRequest(BaseModel):
 
 class ChatCreateModel(BaseModel):
     members: list[int]
+
+class GetUsersDataModel(BaseModel):
+    users_ids: list[int]
