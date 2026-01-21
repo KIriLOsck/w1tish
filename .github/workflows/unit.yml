@@ -25,6 +25,7 @@ jobs:
         sleep 15
     - name: Unit tests
       run: |
+        sudo chmod 666 /var/run/docker.sock
         docker-compose exec app python -m pytest tests/
     - name: Stop services
       if: always()
