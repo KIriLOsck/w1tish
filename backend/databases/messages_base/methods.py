@@ -1,12 +1,13 @@
 from pymongo.collection import Collection
 from sqlalchemy.ext.asyncio import AsyncSession
+from backend.models import MessageModel
 from backend.errors import InvalidMessagesError, NoReadPermissionError, NoWritePermissionError
 from backend.databases.data_base.data_methods import get_user_chats
 
-async def add_messages(user_id: int, messages: list[dict], session: AsyncSession, collection: Collection) -> None:
+async def add_messages(user_id: int, messages: list[MessageModel], session: AsyncSession, collection: Collection) -> None:
     avarible_chats = await get_user_chats(user_id, session)
     for message in messages:
-        if message.get("chat_id") not in avarible_chats:
+        if message.chat_id not in avarible_chats:
             raise NoWritePermissionError(message)
     
     try:

@@ -1,22 +1,25 @@
-class UserExistError(BaseException):
+class BaseAppException(Exception):
     pass
 
-class UserNotFoundError(BaseException):
+class UserExistError(BaseAppException):
     pass
 
-class WrongPasswordError(BaseException):
+class UserNotFoundError(BaseAppException):
     pass
 
-class InvalidTokenError(BaseException):
+class WrongPasswordError(BaseAppException):
     pass
 
-class InvalidMessagesError(BaseException):
+class InvalidTokenError(BaseAppException):
     pass
 
-class ExpiredTokenError(BaseException):
+class InvalidMessagesError(BaseAppException):
     pass
 
-class NoPermissionError(BaseException):
+class ExpiredTokenError(BaseAppException):
+    pass
+
+class NoPermissionError(BaseAppException):
     pass
 
 class NoWritePermissionError(NoPermissionError):

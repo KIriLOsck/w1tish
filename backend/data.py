@@ -7,7 +7,7 @@ from backend.databases.messages_base.methods import add_messages, get_messages_b
 from backend.databases.data_base.engine import get_async_db
 
 from backend.utils.token_generator import get_userid_by_token
-from backend.models import ChatCreateModel, GetUsersDataModel
+from backend.models import ChatCreateModel, GetUsersDataModel, AddMessagesModel
 from backend.errors import (
     InvalidMessagesError,
     InvalidTokenError,
@@ -39,7 +39,7 @@ data_router = APIRouter(prefix="/data")
 async def get_user_data_by_id(
     users: GetUsersDataModel,
     db = Depends(get_async_db)
-):  
+):
     try:
         return await get_users_data_by_ids(users.users_ids, db)
     except UserNotFoundError:
@@ -55,13 +55,13 @@ async def get_self_data(user_id = Depends(get_userid_from_header), db = Depends(
 
 @data_router.post("/messages/add", status_code=status.HTTP_201_CREATED)
 async def add_new_messages(
-    messages: list[dict],
+    messages: AddMessagesModel,
     user_id = Depends(get_userid_from_header),
     session = Depends(get_async_db),
     collection = Depends(get_messages_collection)
 ):
     try:
-        await add_messages(user_id, messages, session, collection)
+        await add_messages(user_id, messages.messages, session, collection)
     except InvalidMessagesError:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,

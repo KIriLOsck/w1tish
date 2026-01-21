@@ -1,11 +1,18 @@
-from backend.databases.data_base.models import usersBase, usersDataBase
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from hashlib import sha256
+
 from backend.errors import UserExistError, UserNotFoundError, WrongPasswordError
 from backend.databases.data_base.data_methods import add_user_data
+from backend.databases.data_base.models import usersBase
 
-async def register_new(username: str, email: str, password: str, session) -> None:
+async def register_new(
+    username: str,
+    email: str,
+    password: str,
+    session: AsyncSession
+) -> int:
     try:
         new_user = usersBase(
             username=username,
@@ -25,7 +32,7 @@ async def register_new(username: str, email: str, password: str, session) -> Non
         raise UserExistError()
 
 
-async def check_user(username: str, session) -> bool:
+async def check_user(username: str, session: AsyncSession) -> usersBase | None:
     query = await session.execute(
         select(usersBase).where(
             usersBase.username == username
@@ -34,10 +41,10 @@ async def check_user(username: str, session) -> bool:
     user = query.scalar_one_or_none()
     return user if user is not None else None
 
-async def auth_user(username: str, password: str, session) -> bool:
+async def auth_user(username: str, password: str, session: AsyncSession) -> int:
     user = await check_user(username, session)
     if user is None:
         raise UserNotFoundError()
     if user.password_hash == sha256(password.encode()).hexdigest():
-        return user
+        return user.id
     raise WrongPasswordError()
