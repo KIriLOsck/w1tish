@@ -7,7 +7,7 @@ from backend.annotations import Database
 from backend.models import RegisterRequestModel, AuthRequestModel, TokensResponse
 from backend.databases.data_base import auth_methods
 
-class AuthService:
+class AuthServiceClass:
     def __init__(self, db: Database):
         self.db = db
     
@@ -34,4 +34,4 @@ class AuthService:
         tokens = await token_generator.refresh_tokens(token)
         return tokens
     
-AuthService = Annotated[AuthService, Depends()]
+AuthService = Annotated[AuthServiceClass, Depends()]
