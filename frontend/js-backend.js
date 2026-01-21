@@ -38,7 +38,6 @@ async function login(username, password) {
     } else if (response.status === 200) {                            
         const data = await response.json();
         localStorage.setItem("accessToken", data.access_token);
-        localStorage.setItem("refreshToken", data.refresh_token);
         window.location.replace("app.html");
     } else { 
         console.log("Error", response.status)
@@ -51,8 +50,10 @@ async function getProtectedData() {
 
         const response = await fetch('http://localhost/data/', {
             method: "GET",
-            headers: {  'Content-Type': 'application/json', 
-                        'Access-Token': accessToken}
+            headers: {
+                'Content-Type': 'application/json', 
+                'Access-Token': accessToken
+            }
         });
 
         if (response.status === 401 || response.status === 422) { 
@@ -67,9 +68,10 @@ async function getProtectedData() {
             console.log(data)
             localStorage.setItem("nickname", data.nickname);
             localStorage.setItem("avatar", data.avatar_url);
-            localStorage.setItem("chats", data.chats);
-            localStorage.setItem("id", data.id);  
-            if (window.location.pathname == "/app.html") load_contacts_and_profile();
+            localStorage.setItem("chats", JSON.stringify(data.chats));
+            localStorage.setItem("id", data.id);
+
+            if (window.location.pathname == "/app.html") load_contacts(); load_profile();
         }
     } else {
         await refreshToken();
@@ -77,28 +79,23 @@ async function getProtectedData() {
 }
 
 async function refreshToken() {
-    const refreshToken = localStorage.getItem("refreshToken");
 
-    if (refreshToken != null) {
-        const response = await fetch('http://localhost/api/update_token', {
-            method: "POST",
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 'token': refreshToken })
-        });
-        console.log(response.status)
-        if (response.status === 200) {
-            const data = await response.json();
-            localStorage.setItem("accessToken", data.access_token);
-            localStorage.setItem("refreshToken", data.refresh_token);
+    const response = await fetch('http://localhost/api/refresh', {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' }
+    });
+    console.log(response.status)
+    if (response.status === 200) {
+        const data = await response.json();
+        localStorage.setItem("accessToken", data.access_token);
 
-        } else if (response.status === 500) {
-            console.log("Iternal server error");
-            // TODO сделай функцию которая будет показывать ошибку на фронте
-        } else if (response.status === 422 || response.status === 401) {
-            localStorage.removeItem("accessToken");
-            localStorage.removeItem("refreshToken");
-            window.location.replace("index.html");
-            create_sign_in_container();
-        }
+    } else if (response.status === 500) {
+        console.log("Iternal server error");
+        // TODO сделай функцию которая будет показывать ошибку на фронте
+
+    } else if (response.status === 422 || response.status === 401) {
+        localStorage.removeItem("accessToken");
+        window.location.replace("index.html");
+        create_sign_in_container();
     }
 }
