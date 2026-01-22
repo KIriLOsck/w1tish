@@ -18,6 +18,7 @@ async function register_user(username, email, password) {
     }
 }
 
+
 async function login(username, password) {
     const response = await fetch('http://localhost/auth', {
         method: 'POST',
@@ -44,11 +45,12 @@ async function login(username, password) {
     }
 }
 
+
 async function getProtectedData() {
     const accessToken = localStorage.getItem("accessToken");
     if (accessToken != null) {
 
-        const response = await fetch('http://localhost/data/', {
+        const response = await fetch('http://localhost/api/data/', {
             method: "GET",
             headers: {
                 'Content-Type': 'application/json', 
@@ -77,6 +79,7 @@ async function getProtectedData() {
         await refreshToken();
     }
 }
+
 
 async function refreshToken() {
 

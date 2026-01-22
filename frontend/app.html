@@ -5,11 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="app.css">
-    <!-- <script src="js.js"></script>
-    <script src="start-js.js"></script> -->
+    <script src="https://unpkg.com/autosize@4.0.2/dist/autosize.min.js"></script>
+    <script src="js.js"></script>
+    <script src="start-js.js"></script>
     <script src="app-js.js"></script>
-    <!-- <script src="js-backend.js"></script>
-    <script>getProtectedData()</script> -->
+    <script src="js-backend.js"></script>
+    <script>getProtectedData()</script>
 </head>
 <body>
     <div id="main_container">
@@ -53,14 +54,6 @@
             </div>
         </div>
     </div>
-    <script src="https://unpkg.com/autosize@4.0.2/dist/autosize.min.js"></script>
-    <script>
-    autosize(document.getElementById("send_message"));
-    document.querySelectorAll(".contact").forEach(item => {item.addEventListener("click", load_chat_container(item.id))});
-    document.getElementById("add_new_chat").addEventListener("click", open_add_chat);
-    document.getElementById("close_btn").addEventListener("click", close_add_chat);
-    document.getElementById("add_btn").addEventListener("click", add_user_in_invitation);
-    document.getElementById("send_invitation").addEventListener("click", create_new_chat);
-    </script>
 </body>
+<script>starting_after()</script>
 </html>

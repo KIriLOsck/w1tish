@@ -18,6 +18,7 @@ body {
 
 #content_main {
     width: 50%;
+    max-width: 700px;
     background-color: #D9D9D9;
     border-radius: 25px;
 }

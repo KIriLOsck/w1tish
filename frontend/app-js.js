@@ -1,3 +1,13 @@
+function starting_after() {
+    autosize(document.getElementById("send_message"));
+    document.querySelectorAll(".contact").forEach(item => {item.addEventListener("click", load_chat_container(item.id))});
+    document.getElementById("add_new_chat").addEventListener("click", open_add_chat);
+    document.getElementById("close_btn").addEventListener("click", close_add_chat);
+    document.getElementById("add_btn").addEventListener("click", add_user_in_invitation);
+    document.getElementById("send_invitation").addEventListener("click", create_new_chat);
+}
+
+
 function load_chat_container(oponent_id) {
     // Создание контейнера чата
     const chat_container = document.createElement("div");
@@ -7,12 +17,11 @@ function load_chat_container(oponent_id) {
     const oponent_header = document.createElement("div");
     oponent_header.classList.add("oponent_header");
 
-    const response_user_info = fetch(('http://localhost/data/user/'), {
-        method: 'POST',
+    const response_user_info = fetch((`http://localhost/api/data/user?id=${oponent_id}`), {
+        method: 'GET',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({"users_ids":[oponent_id]})
     });
-    const user_info = response_user_info.json();
+    const user_info = response_user_info.json()[0];
     
     const logo_oponent = document.createElement("img");
     logo_oponent.src = user_info.avatar_url;
@@ -43,7 +52,7 @@ function load_chat_container(oponent_id) {
     chat_for_oponent.id = "chat_for_oponent";
 
     // Получение истории и создание чата
-    const response = fetch(('http://localhost/data/messages/' + oponent_id), {
+    const response = fetch((`http://localhost/api/data/messages?chat_id=${oponent_id}&offset=0&limit=50`), {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
     });
@@ -130,15 +139,12 @@ async function load_contacts() {
 
 async function get_avatar_url_by_id(id) {
     const response = await fetch(
-        "http://localhost/data/user/",
+        `http://localhost/api/data/user?id=${id}`,
         {
-            method: "POST",
+            method: "GET",
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-                "users_ids": [id]
-            })
         }
     );
 
@@ -151,11 +157,11 @@ async function get_avatar_url_by_id(id) {
 
 async function create_chat(oponents_id) {
     console.log(oponents_id);
-    await fetch(('http://localhost/data/chats/add'), {
+    await fetch(('http://localhost/api/data/chats'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-            "members": [oponents_id]
+            "members": oponents_id
         })
     });
     await load_contacts();
@@ -168,7 +174,7 @@ async function send_message(chat_id) {
     const user_id = localStorage.getItem("id");
     input.textContent = "";
     
-    await fetch(('http://localhost/data/messages/' + chat_id), {
+    await fetch(('http://localhost/api/data/messages'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: {
@@ -221,7 +227,7 @@ function add_user_in_invitation() {
 function create_new_chat() {
     let list = [];
     for (let i = 0; i < document.getElementsByClassName("added_user").length; i++) {
-            list.push(document.getElementsByClassName("added_user").item(i).getElementsByClassName("nickname_added_user").item(0).textContent);
+            list.push(Number(document.getElementsByClassName("added_user").item(i).getElementsByClassName("nickname_added_user").item(0).textContent));
         }
     create_chat(list);
     close_add_chat();
