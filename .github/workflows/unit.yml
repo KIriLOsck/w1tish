@@ -16,5 +16,5 @@ jobs:
     - name: Unit tests
       run: |
         sudo chmod 666 /var/run/docker.sock
-        python3 -m pip install -r requirements.txt
+        python3 -m pip install --no-cache-dir -r requirements.txt
         python3 -m pytest tests/

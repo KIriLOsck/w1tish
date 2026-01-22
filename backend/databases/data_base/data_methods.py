@@ -3,8 +3,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update
 from backend.errors import UserNotFoundError, UserExistError
 from sqlalchemy.exc import IntegrityError
+from backend.models import UsersResponse, UserResponse, ChatModel
 
-async def get_user_data(user_id: int, session: AsyncSession) -> usersDataBase:
+async def get_user_data(user_id: int, session: AsyncSession) -> UserResponse:
     query = await session.execute(
         select(usersDataBase).where(
             usersDataBase.id == user_id
@@ -13,7 +14,13 @@ async def get_user_data(user_id: int, session: AsyncSession) -> usersDataBase:
     user_data = query.scalar_one_or_none()
     if user_data is None:
         raise UserNotFoundError()
-    return user_data
+
+    return UserResponse(
+        id=user_data.id,
+        nickname=user_data.nickname,
+        avatar_url=user_data.avatar_url,
+        chats=user_data.chats
+    )
 
 async def add_user_data(user_id: int, username: str, session: AsyncSession) -> None:
     try:
@@ -33,9 +40,9 @@ async def get_user_chats(user_id: int, session: AsyncSession) -> dict:
     querty = select(usersDataBase.chats).where(usersDataBase.id == user_id)
     return await session.scalar(querty)
 
-async def add_chat(user_id: int, members_ids: int, session: AsyncSession) -> None:
+async def add_chat(user_id: int, members_ids: int, session: AsyncSession) -> int:
     permissions = {str(member): "user" for member in members_ids}
-    permissions[str(user_id)] = "admin"
+    permissions[str(user_id)] = "owner"
 
     new_chat = chatsBase(
         members = permissions
@@ -47,8 +54,15 @@ async def add_chat(user_id: int, members_ids: int, session: AsyncSession) -> Non
     stmt = (
         update(usersDataBase)
         .where(usersDataBase.id == user_id)
-        .values(chats=usersDataBase.chats.concat({str(new_chat.id): {"permission":"write", "last_message":"bebeih rebeboy", "ids": [1, 2, 3]}}))
-    )
+        .values(
+            chats = usersDataBase.chats.concat(
+                {
+                    str(new_chat.id): {
+                        "last_message": "_Чат создан_",
+                        "ids": members_ids
+                    }
+                }
+    )))
     
     await session.execute(stmt) 
     await session.commit()
@@ -66,4 +80,4 @@ async def get_users_data_by_ids(ids, session: AsyncSession):
     if len(users_data) != len(set(ids)):
         raise UserNotFoundError()
         
-    return users_data
+    return UsersResponse.model_validate({"users":users_data})
