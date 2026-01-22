@@ -51,7 +51,12 @@ async def invalid_token_handler(
 async def invalid_messages_handler(
     request: Request, 
     exc: err.InvalidMessagesError
-): pass
+): return JSONResponse(
+    status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+    content = {
+        "detail": "Invalid messages format"
+    }
+)
 
 
 async def expired_token_handlers(
@@ -91,3 +96,11 @@ HANDLERS = {
 def setup_exception_handlers(app: FastAPI):
     for exc_class, handler in HANDLERS.items():
         app.add_exception_handler(exc_class, handler)
+
+    @app.exception_handler(Exception)
+    async def global_exception_handler(request: Request, exc: Exception):
+        return JSONResponse(
+            status_code=500,
+            content={"detail": f"Type: {type(exc).__name__}, Message: {str(exc)}"}
+        )
+

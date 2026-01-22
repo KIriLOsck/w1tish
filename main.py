@@ -1,13 +1,14 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
-from dotenv import load_dotenv
-load_dotenv()
 
 from backend import auth, data
+from backend.utils.exceptions_handlers import setup_exception_handlers
 
 
 app = FastAPI()
+print("Setup exception handlets...")
+setup_exception_handlers(app)
 
 print("Including routers...")
 app.include_router(auth.auth_router)
