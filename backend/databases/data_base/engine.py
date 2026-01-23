@@ -1,17 +1,17 @@
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from typing import AsyncGenerator
 from os import getenv
+from backend.config import settings
 
-USER = getenv("DB_USER", "user")
-PASSWORD = getenv("DB_PASS", "password")
-HOST = getenv("DB_HOST", "database")
-NAME = getenv("DB_NAME", "users_db")
+USER = settings.POSTRES_USER
+PASSWORD = settings.POSTGRES_PASS
+HOST = settings.POSTGRESS_HOST
+NAME = settings.POSTGRESS_BASE_NAME
 
 DATABASE_URL = f"postgresql+asyncpg://{USER}:{PASSWORD}@{HOST}/{NAME}"
 
 _engine = create_async_engine(
     DATABASE_URL,
-    echo=True,
     pool_size=20,
     max_overflow=10,
 )

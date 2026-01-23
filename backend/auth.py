@@ -2,7 +2,7 @@ from fastapi import APIRouter, status, Cookie, Response
 from typing import Annotated
 
 from backend.config import settings
-from backend.utils.services import AuthService
+from backend.dependencies.dependencies import AuthServiceDep
 from backend.models import (
     AuthRequestModel,
     RegisterRequestModel,
@@ -25,7 +25,7 @@ auth_router = APIRouter(prefix="/auth", tags=["Auth"])
 @auth_router.post("/", response_model=AccessTokenResponse)
 async def authenticate(
     auth_request: AuthRequestModel,
-    auth_service: AuthService,
+    auth_service: AuthServiceDep,
     response: Response
 ):  
     tokens = await auth_service.auth_user(auth_request)
@@ -39,7 +39,7 @@ async def authenticate(
 @auth_router.post("/register", status_code=status.HTTP_201_CREATED, response_model=AccessTokenResponse)
 async def register(
     register_request: RegisterRequestModel,
-    auth_service: AuthService,
+    auth_service: AuthServiceDep,
     response: Response
 ): 
     tokens = await auth_service.register_user(register_request)
@@ -52,7 +52,7 @@ async def register(
 
 @auth_router.post("/refresh", response_model=AccessTokenResponse)
 async def update_token(
-    auth_service: AuthService,
+    auth_service: AuthServiceDep,
     response: Response,
     refresh_token: Annotated[str | None, Cookie()] = None
 ):  

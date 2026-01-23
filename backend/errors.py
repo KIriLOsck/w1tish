@@ -1,31 +1,24 @@
-class BaseAppException(Exception):
-    pass
+class BaseAppException(Exception): ...
 
-class UserExistError(BaseAppException):
-    pass
+class UserExistError(BaseAppException): ...
 
-class UserNotFoundError(BaseAppException):
-    pass
+class UserNotFoundError(BaseAppException): ...
 
-class WrongPasswordError(BaseAppException):
-    pass
+class ChatNotFoundError(BaseAppException): ...
 
-class InvalidTokenError(BaseAppException):
-    pass
+class WrongPasswordError(BaseAppException): ...
 
-class InvalidMessagesError(BaseAppException):
-    pass
+class InvalidTokenError(BaseAppException): ...
 
-class ExpiredTokenError(BaseAppException):
-    pass
+class InvalidMessagesError(BaseAppException): ...
 
-class NoPermissionError(BaseAppException):
-    pass
+class ExpiredTokenError(BaseAppException): ...
+
+class NoPermissionError(BaseAppException): ...
+
+class NoReadPermissionError(NoPermissionError): ...
 
 class NoWritePermissionError(NoPermissionError):
     def __init__(self, message: dict):
         super().__init__()
         self.error_message = message
-
-class NoReadPermissionError(NoPermissionError):
-    pass

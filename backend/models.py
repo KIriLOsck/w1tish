@@ -47,8 +47,10 @@ class AccessTokenResponse(BaseModel):
 class TokensResponse(AccessTokenResponse):
     refresh_token: str
 
-class MessagesResponse(SendMessagesRequestModel):
-    pass
+class MessagesResponse(SendMessagesRequestModel): ...
+
+class CreateChatResponse(BaseModel):
+    chat_id: str
 
 class UserResponse(UserModel):
     chats: dict

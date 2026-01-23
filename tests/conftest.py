@@ -8,7 +8,9 @@ import pytest
 import pytest_asyncio
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from testcontainers.postgres import PostgresContainer
-from backend.databases.data_base.models import usersBase, usersDataBase, chatsBase
+from backend.databases.data_base.models import usersBase, chatsBase
+
+#.TODO переделать тесты на моки
 
 docker_socket = Path.home() / ".colima/default/docker.sock"
 if docker_socket.exists():
@@ -51,12 +53,10 @@ async def db_engine(postgres_container):
 @pytest_asyncio.fixture(scope="session", autouse=True)
 async def setup_db(db_engine):
     async with db_engine.begin() as conn:
-        await conn.run_sync(usersDataBase.metadata.create_all)
         await conn.run_sync(usersBase.metadata.create_all)
         await conn.run_sync(chatsBase.metadata.create_all)
     yield
     async with db_engine.begin() as conn:
-        await conn.run_sync(usersDataBase.metadata.drop_all)
         await conn.run_sync(usersBase.metadata.drop_all)
         await conn.run_sync(chatsBase.metadata.drop_all)
 

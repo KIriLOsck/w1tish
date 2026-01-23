@@ -25,6 +25,16 @@ async def user_not_found_handler(
     }
 )
 
+async def chat_not_found_handler(
+    request: Request,
+    exc: err.NoWritePermissionError
+): return JSONResponse(
+    status_code=status.HTTP_404_NOT_FOUND,
+    content = {
+        "detail": "Chat not exists"
+    }
+)
+
 
 async def wrong_password_handler(
     request: Request,
@@ -73,18 +83,19 @@ async def expired_token_handlers(
 async def no_write_permission_handlers(
     request: Request,
     exc: err.NoWritePermissionError
-): pass
+): ...
 
 
 async def no_read_permission_handlers(
     request: Request,
     exc: err.NoReadPermissionError
-): pass
+): ...
 
 
 HANDLERS = {
     err.UserExistError:         user_exist_handler,
     err.UserNotFoundError:      user_not_found_handler,
+    err.ChatNotFoundError:      chat_not_found_handler,
     err.WrongPasswordError:     wrong_password_handler,
     err.InvalidTokenError:      invalid_token_handler,
     err.InvalidMessagesError:   invalid_messages_handler,
