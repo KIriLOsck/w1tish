@@ -15,6 +15,7 @@ class ChatModel(BaseModel):
 class MessageModel(BaseModel):
     chat_id: str
     content: str
+    sender: str
 
 
 # модели запросов
