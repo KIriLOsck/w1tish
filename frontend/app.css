@@ -91,6 +91,7 @@ body {
 }
 
 .logo, .used_logo {
+    align-self: center;
     height: 32px;
     width: 32px;
     border-radius: 100%;
@@ -229,7 +230,7 @@ p {
     display: flex;
     flex-flow: row nowrap;
     background-color:#666666;
-    padding: 10px 15px 10px 15px;
+    padding: 10px 15px 10px 20px;
     border-radius: 15px;
     align-items: center;
     color: #FFFFFF;
@@ -240,11 +241,13 @@ p {
 #add_new_chat:hover {
     background-color: #ffffff;
     color: #666666;
-    padding: 12px 17px 12px 17px;
+    padding: 12px 17px 12px 22px;
 }
 
 #message_send {
     cursor: pointer;
+    margin-right: 10px;
+    margin-left: 5px;
 }
 
 #wait_event {
@@ -343,9 +346,22 @@ p#add_chat {
 }
 
 .added_user {
+    font-family: Inter;
+    font-size: 12pt;
+    border-radius: 15px;
+    border: 1px solid #9D9D9D;
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
     justify-content: center;
-    gap: 20%;
+    gap: 10%;
+    width: fit-content;
+    height: fit-content;
+    padding: 10px 7% 10px 7%;
+    background-color:#C9C9C9;
+
+}
+
+#add_text {
+    margin-left: 20px;
 }

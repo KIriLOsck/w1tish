@@ -13,14 +13,14 @@ async function get_data(user_id) {
     });
 
     if (data.status === 200) {
-        return data;
+        return data.json();
     } else if (data.status === 404) {
     }
 }
 
 
 async function load_chat(user_id, chat_id) {
-    var data = await fetch((`http://localhost/api/data/messages?chat_id=${chat_id}&offset=0&limit=50`), {
+    var data = await fetch((`http://localhost/api/data/messages?chat_id=${Number(chat_id)}&offset=0&limit=50`), {
         method: 'GET',
         headers: { 'Content-Type': 'application/json',
             'Access-Token': localStorage.getItem("accessToken")
@@ -30,10 +30,11 @@ async function load_chat(user_id, chat_id) {
     const chat_for_oponent = document.createElement("div");
     chat_for_oponent.id = "chat_for_oponent";
 
+
     for (message in data.messages) {
         const message_container = document.createElement("div") 
-        if (message.sender == user_id) {
-            message_container.classList.add("oponent message");
+        if (data.messages[Number(message)].sender != user_id) {
+            message_container.className = "oponent message";
         } else {
             message_container.className = "user message";
         }
@@ -84,8 +85,8 @@ async function load_chat_container() {
 
         const chat = document.createElement("div");
         chat.id = "chat";
-        
-        load_chat(this.id, document.getElementById(this.id).childNodes.item(0).id);
+
+        load_chat(document.getElementById("user_id").textContent, document.getElementById(this.id).firstElementChild.id);
 
         const send = document.createElement("div");
         send.id = "send";
@@ -96,9 +97,9 @@ async function load_chat_container() {
         message_send.maxlength = "1000";
         message_send.rows = "1";
 
-        const send_img = document.createElement("img");
+        const send_img = document.createElement("i");
         send_img.alt = "send";
-        send_img.classList.add("used_logo");
+        send_img.classList.add("fas", "fa-solid", "fa-paper-plane", "fa-2x", "used_logo");
         send_img.id = "message_send";
 
         send.append(message_send, send_img);
@@ -189,7 +190,7 @@ async function get_nickname_by_id(id) {
 
 
 async function create_chat(oponents_id) {
-    console.log(oponents_id);
+
     await fetch(('http://localhost/api/data/chats'), {
         method: 'POST',
         headers: {  'Access-Token': localStorage.getItem("accessToken"),
@@ -203,11 +204,11 @@ async function create_chat(oponents_id) {
 
 
 async function send_message() {
-    var user_id = "", chat_id = "";
+    var user_id = document.getElementById("user_id").textContent; 
+    var chat_id = "";
     for (let i = 0; i < document.getElementsByClassName("name_contact").length; i++) {
         if (document.getElementsByClassName("name_contact").item(i).textContent == document.getElementById("oponent_name").textContent){
             chat_id = document.getElementsByClassName("name_contact").item(i).parentNode.id;
-            user_id = document.getElementsByClassName("name_contact").item(i).parentNode.parentNode.id;
             break;
         }
     }
@@ -250,7 +251,7 @@ function close_add_chat() {
 
 async function add_user_in_invitation() {
     var input_value = document.getElementById("input_id").value;
-    if (input_value != "" && document.getElementById("add_users").childElementCount < 8) {
+    if (input_value != "" && document.getElementById("add_users").childElementCount < 8 && input_value != document.getElementById("user_id").textContent) {
         for (let i = 0; i < document.getElementsByClassName("added_user").length; i++) {
             if (input_value == document.getElementsByClassName("added_user").item(i).getElementsByClassName("nickname_added_user").item(0).textContent){
                 return
@@ -261,34 +262,44 @@ async function add_user_in_invitation() {
                 return
             }
         }
-        const response_user_info = await get_data(Number(input_value));
 
-        if (response_user_info.status == 200) {
-            const added_user = document.createElement("div");
-            added_user.classList.add("added_user");
+        var response_user_info = await get_data(Number(input_value));
+        response_user_info = response_user_info.users[0];
 
-            const nickname_added_user = document.createElement("p")
-            nickname_added_user.classList.add("nickname_added_user");
-            nickname_added_user.textContent = input_value;
-            nickname_added_user.value = input_value;
+        const added_user = document.createElement("div");
+        added_user.classList.add("added_user");
+        
+        const avatar_added_user = document.createElement("img");
+        avatar_added_user.src = response_user_info.avatar_url;
+        avatar_added_user.classList.add("logo");
 
-            const delete_user = document.createElement("img");
-            delete_user.classList.add("used_logo", "delete_user");
-            delete_user.alt = "delete";
+        const nickname_added_user = document.createElement("p")
+        nickname_added_user.classList.add("nickname_added_user");
+        nickname_added_user.textContent = response_user_info.nickname;
+        nickname_added_user.value = input_value;
 
-            added_user.append(nickname_added_user, delete_user);
-            document.getElementById("add_users").append(added_user);
-        }
+        const delete_user = document.createElement("i");
+        delete_user.classList.add("fas", "fa-solid", "fa-times", "used_logo", "fa-2x", "delete_user");
+        delete_user.alt = "delete";
+
+        added_user.append(avatar_added_user, nickname_added_user, delete_user);
+        document.getElementById("add_users").append(added_user);
+        delete_user.addEventListener("click", delete_added_user);
     }
 }
 
 function create_new_chat() {
     if (document.getElementsByClassName("added_user").length != 0){
         let list = [];
-        for (let i = 0; i < document.getElementsByClassName("added_user").length; i++) {
-                list.push(Number(document.getElementsByClassName("added_user").item(i).getElementsByClassName("nickname_added_user").item(0).textContent));
+        add_users = document.getElementById("add_users");
+        for (let i = 0; i < add_users.childElementCount; i++) {
+                list.push(add_users.getElementsByClassName("nickname_added_user").item(i).textContent);
             }
         create_chat(list);
         close_add_chat();
     }
+}
+
+function delete_added_user() {
+    document.getElementById("add_users").removeChild(this.parentNode);
 }

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="app.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" />
     <script src="https://unpkg.com/autosize@4.0.2/dist/autosize.min.js"></script>
     <script src="js.js"></script>
     <script src="start-js.js"></script>
@@ -16,24 +17,24 @@
     <div id="main_container">
         <div id="view_container">
             <div id="add_new_chat">
-                <img src="" alt="add" class="logo">
+                <i class="fas fa-solid fa-user-plus fa-2x logo"></i>
                 <p id="add_text">Add new chat</p>
             </div>
             <div id="contacts">
             </div>
             <div id="profile">
                 <div class="user_view">
-                    <img src="" alt="logo_user" class="logo" id="logo_user">
+                    <img class="logo" id="logo_user">
                     <div class="user_info">
-                        <p id="nickname">kirilosk</p>
-                        <p id="user_id">1</p>
+                        <p id="nickname">kirilosck</p>
+                        <p id="user_id">0</p>
                     </div>
                 </div>
-                <img src="" alt="settings" class="used_logo" id="settings">
+                <i class="fas fa-solid fa-cog fa-2x used_logo" id="settings"></i>
             </div>
         </div>
         <div id="wait_event">
-            <img src="" alt="wait_logo" id="wait_logo">
+            <i class="fas fa-solid fa-comment-slash fa-10x"></i>
             <h1>Здесь пока что ничего нету</h1>
             <h1 style="font-size: 60pt;">._.</h1>
             <h4>Выберите контакт из левого столбца</h4>
@@ -41,7 +42,7 @@
     </div>
     <div id="overlay">
         <div id="add_chat">
-            <img src="" alt="close" id="close_btn" class="used_logo">
+            <i id="close_btn" class="fas fa-solid fa-times fa-2x used_logo"></i>
             <div id="contaiter_input_add_chat">
                 <p id="add_chat">Отправить приглашение</p>
                 <input type="text" placeholder="Введите id человека..." maxlength="10" id="input_id">

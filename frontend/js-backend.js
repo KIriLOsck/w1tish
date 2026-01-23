@@ -65,6 +65,10 @@ async function getProtectedData() {
         } else if (response.status === 500) {
             console.log("Виноват бэкэндер")
 
+        } else if (response.status === 404) {
+            localStorage.removeItem("accessToken");
+            window.location.replace("index.html");
+            create_sign_in_container();
         } else {
             const data = await response.json();
             console.log(data)
