@@ -4,6 +4,9 @@ from backend.models import MessagesResponse, SendMessagesRequestModel
 from backend.errors import InvalidMessagesError
 from pydantic import ValidationError
 
+from logging import getLogger
+logger = getLogger(__name__)
+
 class MessagesRepository:
     def __init__(self, mb: Collection, db: AsyncSession):
         self.mb = mb
@@ -14,11 +17,17 @@ class MessagesRepository:
         messages: SendMessagesRequestModel
     ) -> None:
         try:
+            logger.info("Trying insert messages...")
             await self.mb.insert_many(messages.model_dump()["messages"])
-        except TypeError:
+            logger.info(f"Successfully added {len(messages.messages)} messages")
+
+        except TypeError as e:
+            logger.error("Error ocured: ", exc_info=e)
             raise InvalidMessagesError()
+        
         except ValidationError as e:
-            raise InvalidMessagesError(e.errors())
+            logger.warning("Invalid messages body!")
+            raise InvalidMessagesError(e.title)
         
     async def get_messages_by_chat(
             self,
@@ -26,6 +35,7 @@ class MessagesRepository:
             limit: int,
             offset: int
     ) -> MessagesResponse:
+        logger.info("Getting chat history...")
         messages = await self.mb.find(
             {"chat_id": chat_id},
             {"_id": 0}

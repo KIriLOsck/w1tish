@@ -3,6 +3,8 @@ from backend import errors as err
 from backend.utils import token_generator
 from backend.interfaces import protocols
 
+from logging import getLogger
+logger = getLogger(__name__)
 
 class AuthService:
     def __init__(self, auth_repo: protocols.IAuthRepository):
@@ -43,8 +45,10 @@ class DataService:
 
     async def add_messages(self, user_id: int, request: models.SendMessagesRequestModel) -> None:
         avarible_chats = await self.user_chats.get_user_chats(user_id)
+        logger.info("Checking permissions...")
         for message in request.messages:
             if message.chat_id not in avarible_chats:
+                logger.warning("User have not permission to send messages")
                 raise err.NoWritePermissionError(message)
             
         await self.user_messages.add_messages(request)

@@ -23,17 +23,8 @@ services:
           - "27017:27017"
   app:
     build: .
-    environment:
-      - JWT_SECRET=${JWT_SECRET:-supersecretkey}
-
-      - DB_USER=${DB_USER:-admin}
-      - DB_PASS=${DB_PASS:-admin}
-      - DB_HOST=${DB_HOST:-database}
-      - DB_NAME=${DB_NAME:-users_db}
-
-      - MONGO_USER=${MONGO_USER:-admin}
-      - MONGO_PASS=${MONGO_PASS:-admin}
-      - MONGO_HOST=${MONGO_HOST:-messagebase}
+    volumes:
+      - ./logs:/app/backend/logs
     ports:
       - "80:80"
 

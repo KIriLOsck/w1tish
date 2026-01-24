@@ -2,7 +2,8 @@ from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
 import backend.errors as err
 
-
+import logging
+logger = logging.getLogger(__name__)
 
 async def user_exist_handler(
     request: Request,
@@ -110,8 +111,8 @@ def setup_exception_handlers(app: FastAPI):
 
     @app.exception_handler(Exception)
     async def global_exception_handler(request: Request, exc: Exception):
+        logger.error(f"Type: {type(exc).__name__}", exc_info=exc)
         return JSONResponse(
             status_code=500,
             content={"detail": f"Type: {type(exc).__name__}, Message: {str(exc)}"}
         )
-

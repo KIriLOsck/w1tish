@@ -2,12 +2,16 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
-from backend.api import data
-from backend.api import auth
+import logging
+from backend.core.logger import setup_logging
+setup_logging()
+logger = logging.getLogger(__name__)
+
+from backend.api import data, auth
+from backend.core.engine import lifespan
 from backend.utils.exceptions_handlers import setup_exception_handlers
 
-
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)
 setup_exception_handlers(app)
 
 app.include_router(auth.auth_router)
