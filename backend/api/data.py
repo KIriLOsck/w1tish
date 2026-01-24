@@ -7,8 +7,8 @@ from backend.utils.token_generator import get_id_by_jwt
 from backend import models
 
 http_bearer = HTTPBearer(auto_error=True)
-async def get_userid_from_bearer(token: str = Security(http_bearer)):
-    return await get_id_by_jwt(token.credentials)
+def get_userid_from_bearer(token: str = Security(http_bearer)):
+    return get_id_by_jwt(token.credentials)
 
 CurrentUser = Annotated[int, Depends(get_userid_from_bearer)]
 data_router = APIRouter(prefix="/api/data", tags=["Data methods"])

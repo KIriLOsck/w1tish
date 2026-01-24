@@ -2,15 +2,14 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
-from backend import auth, data
+from backend.api import data
+from backend.api import auth
 from backend.utils.exceptions_handlers import setup_exception_handlers
 
 
 app = FastAPI()
-print("Setup exception handlets...")
 setup_exception_handlers(app)
 
-print("Including routers...")
 app.include_router(auth.auth_router)
 app.include_router(data.data_router)
 
@@ -27,5 +26,3 @@ async def status():
     return {"status":"ok"}
 
 app.mount("/", StaticFiles(directory="frontend", html=True), name="static")
-
-print("Application started")

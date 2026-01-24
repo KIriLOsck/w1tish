@@ -2,7 +2,7 @@ import jwt
 from backend.errors import InvalidTokenError, ExpiredTokenError
 from backend.models import TokensResponse
 import datetime
-from backend.config import settings
+from backend.core.config import settings
 
 secret = settings.JWT_SECRET
 algorithm = settings.JWT_ALGORITHM

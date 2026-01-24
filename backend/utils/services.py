@@ -1,15 +1,11 @@
 from backend import models
-
-from backend.utils import token_generator
 from backend import errors as err
-
-from backend.databases.data_base.data_methods import ChatRepository, DataRepository
-from backend.databases.data_base.auth_methods import AuthRepository
-from backend.databases.messages_base.chat_methods import MessagesRepository
+from backend.utils import token_generator
+from backend.interfaces import services
 
 
 class AuthService:
-    def __init__(self, auth_repo: AuthRepository):
+    def __init__(self, auth_repo: services.IAuthRepository):
         self.auth_repo = auth_repo
     
     async def auth_user(self, request: models.AuthRequestModel) -> models.TokensResponse:
@@ -37,9 +33,9 @@ class AuthService:
 class DataService:
     def __init__(
         self,
-        data_repo: DataRepository,
-        chats_repo: ChatRepository,
-        mess_repo: MessagesRepository
+        data_repo: services.IDataRepository,
+        chats_repo: services.IChatRepository,
+        mess_repo: services.IMessagesRepository
     ):
         self.user_data = data_repo
         self.user_chats = chats_repo

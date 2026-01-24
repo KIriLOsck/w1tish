@@ -5,8 +5,8 @@ from hashlib import sha256
 from random import choice as rand_choice
 
 from backend.errors import UserExistError, UserNotFoundError, WrongPasswordError
-from backend.databases.data_base.models import usersBase
-from backend.config import settings
+from backend import models
+from backend.core.config import settings
 
 class AuthRepository:
 
@@ -19,9 +19,9 @@ class AuthRepository:
         password: str
     ) -> int:
         try:
-            new_user = usersBase(
+            new_user = models.usersBase(
                 username=username,
-                nickname=username,              # при регистрации ставим по умолчанию
+                nickname=username,                                   # при регистрации ставим ник по умолчанию username
                 email=email,
                 password_hash=sha256(password.encode()).hexdigest(), # TODO реализовать алгоритм шифрования на Bcrypt
                 avatar_url=rand_choice(settings.BASE_AVATARS_URL)
@@ -37,10 +37,10 @@ class AuthRepository:
             raise UserExistError()
 
 
-    async def check_user(self, username: str) -> usersBase:
+    async def check_user(self, username: str) -> models.usersBase:
         query = await self.db.execute(
-            select(usersBase).where(
-                usersBase.username == username
+            select(models.usersBase).where(
+                models.usersBase.username == username
             )
         )
         user = query.scalar_one_or_none()
@@ -49,6 +49,6 @@ class AuthRepository:
 
     async def auth_user(self, username: str, password: str) -> int:
         user = await self.check_user(username)
-        if user.password_hash == sha256(password.encode()).hexdigest(): # TODO алгоритм шифрования
+        if user.password_hash == sha256(password.encode()).hexdigest():          # TODO алгоритм шифрования
             return user.id
         raise WrongPasswordError()

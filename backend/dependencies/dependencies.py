@@ -4,9 +4,9 @@ from typing import Annotated
 from backend.utils import services
 from backend.dependencies import annotations
 
-from backend.databases.data_base.data_methods import ChatRepository, DataRepository
-from backend.databases.data_base.auth_methods import AuthRepository
-from backend.databases.messages_base.chat_methods import MessagesRepository
+from backend.repositories.data_methods import ChatRepository, DataRepository
+from backend.repositories.auth_methods import AuthRepository
+from backend.repositories.chat_methods import MessagesRepository
 
 # TODO добавить фабрики для репозиториев
 

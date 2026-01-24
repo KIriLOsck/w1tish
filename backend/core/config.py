@@ -5,10 +5,15 @@ class Settings(BaseSettings):
     COOKIE_SECURE: bool = False
     COOKIE_SAMESITE: str = "lax"
 
-    POSTRES_USER: str = "admin"
+    POSTGRES_USER: str = "admin"
     POSTGRES_PASS: str = "admin"
-    POSTGRESS_HOST: str = "database"
-    POSTGRESS_BASE_NAME: str = "users_db"
+    POSTGRES_HOST: str = "database"
+    POSTGRES_BASE: str = "users_db"
+
+    MONGO_USER: str = "admin"
+    MONGO_PASS: str = "password"
+    MONGO_HOST: str = "mongodb"
+    MONGO_NAME: str = "messages_db"
 
     JWT_SECRET: str = "iWjwGUtt-DUeNb_QU8Oypc4jUZJX_FQflzpDzQTF9vA="
     JWT_ALGORITHM: str = "HS256"

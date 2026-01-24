@@ -1,7 +1,7 @@
 from fastapi import APIRouter, status, Cookie, Response
 from typing import Annotated
 
-from backend.config import settings
+from backend.core.config import settings
 from backend.dependencies.dependencies import AuthServiceDep
 from backend.models import (
     AuthRequestModel,
