@@ -1,9 +1,11 @@
 from pydantic import BaseModel
 
 from sqlalchemy.ext.asyncio import AsyncAttrs
-from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import text
+from sqlalchemy.dialects.postgresql import JSONB
+from datetime import datetime
+from sqlalchemy.orm import Mapped, mapped_column
 
 
 # основные модели
@@ -12,6 +14,7 @@ class Base(AsyncAttrs, DeclarativeBase): ...
 
 class UserModel(BaseModel):
     id: int
+    username: str
     nickname: str
     avatar_url: str
 
@@ -72,17 +75,19 @@ class UsersResponse(BaseModel):
 class usersBase(Base):
     __tablename__ = "users"
     
-    id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, unique=True, index=True, nullable=False)
-    avatar_url = Column(String, nullable=True)
-    nickname = Column(String, nullable=False)
-    chats = Column(JSONB, nullable=True)
-    password_hash = Column(String, nullable=False)
-    email = Column(String, unique=True, index=True, nullable=False)
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    username: Mapped[str] = mapped_column(unique=True, index=True, nullable=False)
+    avatar_url: Mapped[str] = mapped_column(nullable=True)
+    nickname: Mapped[str] = mapped_column(nullable=False)
+    password_hash: Mapped[str] = mapped_column(nullable=False)
+    email: Mapped[str] = mapped_column(nullable=False)
 
 class chatsBase(Base):
     __tablename__ = "chats"
 
-    id = Column(Integer, primary_key=True, index=True)
-    members = Column(JSONB, nullable=True)
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    last_message_text: Mapped[str] = mapped_column(server_default=text("'_Чат создан_'"))
+    last_message_time: Mapped[datetime] = mapped_column(server_default=text("now()"))
+    last_message_author: Mapped[int] = mapped_column(server_default=text("0"))
+    permissions: Mapped[dict] = mapped_column(JSONB, server_default=text("'{}'::jsonb"))
 

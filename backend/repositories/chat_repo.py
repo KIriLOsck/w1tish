@@ -20,7 +20,7 @@ class MessagesRepository:
             await self.mb.insert_many(messages.model_dump()["messages"])
 
         except TypeError as e:
-            logger.error("Error ocured: ", exc_info=e)
+            logger.error("Error occured: ", exc_info=e)
             raise InvalidMessagesError()
         
         except ValidationError as e:

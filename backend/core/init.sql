@@ -4,11 +4,13 @@ CREATE TABLE users (
     password_hash TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL,
     nickname TEXT NOT NULL,
-    avatar_url TEXT,
-    chats JSONB DEFAULT '{}'::JSONB
+    avatar_url TEXT
 );
 
 CREATE TABLE chats (
     id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    members JSONB DEFAULT '{}'::JSONB
+    last_message_text TEXT DEFAULT '_Чат создан_',
+    last_message_time TIMESTAMP DEFAULT now(),
+    last_message_author INT DEFAULT 0,
+    permissions JSONB DEFAULT '{}'::JSONB
 );

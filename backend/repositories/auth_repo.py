@@ -44,7 +44,7 @@ class AuthRepository:
 
     async def check_user(self, username: str) -> models.usersBase:
         query = await self.db.execute(
-            select(models.usersBase).where(
+            select(models.usersBase.id).where(
                 models.usersBase.username == username
             )
         )

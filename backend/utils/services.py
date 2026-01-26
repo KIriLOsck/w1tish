@@ -57,10 +57,7 @@ class DataService:
         permissions = {str(member): "user" for member in request.members_ids}
         permissions[str(user_id)] = "owner"
 
-        chat_id = await self.user_chats.add_chat(
-            request.members_ids,
-            permissions
-        )
+        chat_id = await self.user_chats.add_chat(permissions)
         return chat_id
 
     async def get_messages(self, user_id: int, chat_id: str, offset: int, limit: int) -> models.MessagesResponse:
