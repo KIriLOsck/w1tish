@@ -1,12 +1,12 @@
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from hashlib import sha256
 from random import choice as rand_choice
 
 from backend.errors import UserExistError, UserNotFoundError, WrongPasswordError
 from backend import models
 from backend.core.config import settings
+from backend.interfaces import protocols
 
 from logging import getLogger
 logger = getLogger(__name__)
@@ -14,7 +14,9 @@ logger = getLogger(__name__)
 
 class AuthRepository:
 
-    def __init__(self, db: AsyncSession): self.db = db
+    def __init__(self, db: AsyncSession, encrypter: protocols.IPasswordEncrypter):
+        self.db = db
+        self.encrypter = encrypter
 
     async def register_new(
         self, 
@@ -22,12 +24,13 @@ class AuthRepository:
         email: str,
         password: str
     ) -> int:
+        encrypted_password = await self.encrypter.encrypt_password(password)
         try:
             new_user = models.usersBase(
                 username=username,
                 nickname=username,                                   # при регистрации ставим ник по умолчанию username
                 email=email,
-                password_hash=sha256(password.encode()).hexdigest(), # TODO реализовать алгоритм шифрования на Bcrypt
+                password_hash=encrypted_password,
                 avatar_url=rand_choice(settings.BASE_AVATARS_URL)
             )
 
@@ -44,7 +47,7 @@ class AuthRepository:
 
     async def check_user(self, username: str) -> models.usersBase:
         query = await self.db.execute(
-            select(models.usersBase.id).where(
+            select(models.usersBase).where(
                 models.usersBase.username == username
             )
         )
@@ -58,7 +61,7 @@ class AuthRepository:
     async def auth_user(self, username: str, password: str) -> int:
         user = await self.check_user(username)
 
-        if user.password_hash == sha256(password.encode()).hexdigest():          # TODO алгоритм шифрования
+        if await self.encrypter.validate_password(password, user.password_hash):
             return user.id
         
         raise WrongPasswordError()

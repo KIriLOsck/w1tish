@@ -1,6 +1,6 @@
 from backend import models
 from backend import errors as err
-from backend.utils import token_generator
+from backend.utils.security import token_generator
 from backend.interfaces import protocols
 
 from logging import getLogger

@@ -4,6 +4,8 @@ from datetime import datetime
 class Settings(BaseSettings):
     REFRESH_TOKEN_MAX_AGE: int = 604800
     ACCESS_TOKEN_MAX_AGE: int = 900
+    PASSWORD_ROUNGS: int = 12
+    PASSWORD_PEPER: str = "spice_peper"
 
     COOKIE_SECURE: bool = False
     COOKIE_SAMESITE: str = "lax"
@@ -29,6 +31,8 @@ class Settings(BaseSettings):
         "https://cojo.ru/wp-content/uploads/2022/12/avatarka-1-3.webp",
         "https://img.freepik.com/free-photo/rendering-bee-anime-character_23-2150963632.jpg"
     ]
+
+    WORKERS_COUNT: int = 8
 
     model_config = SettingsConfigDict(env_file=".env")
 

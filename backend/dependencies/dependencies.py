@@ -4,6 +4,7 @@ from typing import Annotated
 from backend.utils import services
 from backend.dependencies import annotations
 from backend import repositories as repo
+from backend.utils.security import password_encrypt
 
 
 # TODO добавить фабрики для репозиториев
@@ -11,7 +12,8 @@ from backend import repositories as repo
 def get_auth_service(
     session: annotations.Database
 ) -> services.AuthService:
-    auth_repo = repo.AuthRepository(session)
+    pass_encrypter = password_encrypt.PasswordEncrypter()
+    auth_repo = repo.AuthRepository(session, pass_encrypter)
     return services.AuthService(auth_repo)
 
 def get_data_service(
