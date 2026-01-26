@@ -22,13 +22,13 @@ P_NAME = settings.POSTGRES_BASE
 P_URL = f"postgresql+asyncpg://{P_USER}:{P_PASS}@{P_HOST}/{P_NAME}"
 M_URL = f"mongodb://{M_USER}:{M_PASS}@{M_HOST}:27017"
 
-logger.info("Creating postgres session...")
+logger.debug("Creating postgres session...")
 
 engine = create_async_engine(P_URL, pool_size=20, max_overflow=10)
 AsyncSessionLocal = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 mongo_session: AsyncMongoClient = None
 
-logger.info("Created postgres session.")
+logger.debug("Created postgres session.")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

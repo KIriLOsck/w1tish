@@ -8,89 +8,117 @@ logger = logging.getLogger(__name__)
 async def user_exist_handler(
     request: Request,
     exc: err.UserExistError
-): return JSONResponse(
-    status_code=status.HTTP_409_CONFLICT,
-    content = {
-        "detail": "User already exists"
-    }
-)
+):
+    logger.warning("User already exist")
+    return JSONResponse(
+        status_code=status.HTTP_409_CONFLICT,
+        content = {
+            "detail": "User already exists"
+        }
+    )
 
 
 async def user_not_found_handler(
     request: Request,
     exc: err.UserNotFoundError
-): return JSONResponse(
-    status_code=status.HTTP_404_NOT_FOUND,
-    content = {
-        "detail": "User not exists"
-    }
-)
+):
+    logger.warning("User not exist")
+    return JSONResponse(
+        status_code=status.HTTP_404_NOT_FOUND,
+        content = {
+            "detail": "User not exists"
+        }
+    )
 
 async def chat_not_found_handler(
     request: Request,
     exc: err.NoWritePermissionError
-): return JSONResponse(
-    status_code=status.HTTP_404_NOT_FOUND,
-    content = {
-        "detail": "Chat not exists"
-    }
-)
+):
+    logger.warning("Chat not found")
+    return JSONResponse(
+        status_code=status.HTTP_404_NOT_FOUND,
+        content = {
+            "detail": "Chat not exists"
+        }
+    )
 
 
 async def wrong_password_handler(
     request: Request,
     exc: err.WrongPasswordError
-): return JSONResponse(
-    status_code=status.HTTP_401_UNAUTHORIZED,
-    content = {
-        "delail": "Wrong password or login"
-    }
-)
+):
+    logger.warning("Wrong password")
+    return JSONResponse(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        content = {
+            "delail": "Wrong password or login"
+        }
+    )
 
 
 async def invalid_token_handler(
     request: Request,
     exc: err.InvalidTokenError
-): return JSONResponse(
-    status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
-    content = {
-        "detail": "Invalid token"
-    }
-)
+):
+    logger.warning("Invalid token")
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+        content = {
+            "detail": "Invalid token"
+        }
+    )
 
 
 async def invalid_messages_handler(
     request: Request, 
     exc: err.InvalidMessagesError
-): return JSONResponse(
-    status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
-    content = {
-        "detail": "Invalid messages format"
-    }
-)
+):
+    logger.warning("Invalid message format")
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+        content = {
+            "detail": "Invalid messages format"
+        }
+    )
 
 
 async def expired_token_handlers(
     request: Request,
     exc: err.ExpiredTokenError
-): return JSONResponse(
-    status_code=status.HTTP_401_UNAUTHORIZED,
-    content = {
-        "detail": "Token expired"
-    }
-)
+):
+    logger.warning("Token expired")
+    return JSONResponse(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        content = {
+            "detail": "Token expired"
+        }
+    )
 
 
 async def no_write_permission_handlers(
     request: Request,
     exc: err.NoWritePermissionError
-): ...
+):
+    logger.warning("No write permissions")
+    return JSONResponse(
+        status_code=status.HTTP_403_FORBIDDEN,
+        content = {
+            "detail": "Has no permissions to write"
+        }
+    )
 
 
 async def no_read_permission_handlers(
     request: Request,
     exc: err.NoReadPermissionError
-): ...
+):
+    logger.warning("No read permissions")
+    return JSONResponse(
+        status_code=status.HTTP_403_FORBIDDEN,
+        content = {
+            "detail": "Has no permissions to read"
+        }
+    )
 
 
 HANDLERS = {

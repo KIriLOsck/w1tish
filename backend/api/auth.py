@@ -9,6 +9,9 @@ from backend.models import (
     AccessTokenResponse
 )
 
+import logging
+logger = logging.getLogger(__name__)
+
 def _set_refresh_cookie(response: Response, refresh_token) -> None:
         response.set_cookie(
             key="refresh_token",
@@ -28,6 +31,7 @@ async def authenticate(
     auth_service: AuthServiceDep,
     response: Response
 ):  
+    logger.info("[POST] Trying authenticate user...")
     tokens = await auth_service.auth_user(auth_request)
     _set_refresh_cookie(response, tokens.refresh_token)
 
@@ -42,6 +46,7 @@ async def register(
     auth_service: AuthServiceDep,
     response: Response
 ): 
+    logger.info("[POST] Trying register user...")
     tokens = await auth_service.register_user(register_request)
     _set_refresh_cookie(response, tokens.refresh_token)
 
@@ -56,6 +61,7 @@ async def update_token(
     response: Response,
     refresh_token: Annotated[str | None, Cookie()] = None
 ):  
+    logger.info("[POST] Trying refresh token...")
     tokens = await auth_service.update_auth_session(refresh_token)
     _set_refresh_cookie(response, tokens.refresh_token)
 

@@ -6,6 +6,9 @@ from typing import Annotated
 from backend.utils.token_generator import get_id_by_jwt
 from backend import models
 
+import logging
+logger = logging.getLogger(__name__)
+
 http_bearer = HTTPBearer(auto_error=True)
 def get_userid_from_bearer(token: str = Security(http_bearer)):
     return get_id_by_jwt(token.credentials)
@@ -18,11 +21,13 @@ async def get_user_data_by_id(
     service: DataServiceDep,
     user_id: Annotated[list[int], Query(min_length=1)]
 ):
+    logger.info("[GET] Trying get some users data...")
     return await service.get_users_data(user_id)
 
 
 @data_router.get("/", response_model=models.UserResponse)
 async def get_self_data(service: DataServiceDep, user_id: CurrentUser):
+    logger.info("[GET] Trying get user data...")
     return await service.get_user_data(user_id)
 
 
@@ -35,6 +40,7 @@ async def add_new_messages(
     service: DataServiceDep,
     user_id: CurrentUser
 ):
+    logger.info("[POST] Trying to add new messages...")
     await service.add_messages(user_id, request)
 
 @data_router.get("/messages", response_model=models.MessagesResponse)
@@ -45,6 +51,7 @@ async def get_messages(
     offset: Annotated[int, Query(ge=0)] = 0,
     limit: Annotated[int, Query(le=100)] = 50
 ):
+    logger.info("[GET] Trying get messages...")
     messages = await service.get_messages(user_id, chat_id, offset, limit)
     return messages
 
@@ -54,6 +61,7 @@ async def create_new_chat(
     service: DataServiceDep,
     user_id: CurrentUser
 ):  
+    logger.info("[GET] Trying get user chats...")
     chat_id = await service.add_chat(user_id, request)
     return models.CreateChatResponse(chat_id=chat_id)
 
