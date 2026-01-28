@@ -17,7 +17,7 @@ class Settings(BaseSettings):
 
     MONGO_USER: str = "admin"
     MONGO_PASS: str = "admin"
-    MONGO_HOST: str = "messagebase"
+    MONGO_HOST: str = "messagebase:27017"
     MONGO_NAME: str = "messages_db"
     MONGO_DISCONECT_TIMEOUT: int = 5
 

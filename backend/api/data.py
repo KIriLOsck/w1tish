@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, status, Security, Query
 from fastapi.security import HTTPBearer
 
 from backend.dependencies.dependencies import DataServiceDep
-from typing import Annotated, Optional
+from typing import Annotated
 from backend.utils.security.token_generator import get_id_by_jwt
 from backend import models
 

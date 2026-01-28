@@ -30,6 +30,7 @@ class AuthService:
     async def update_auth_session(self, token: str) -> models.TokensResponse:
         tokens = token_generator.refresh_tokens(token)
         return tokens
+    # TODO добавить проверку logout токенов
 
 
 class DataService:
