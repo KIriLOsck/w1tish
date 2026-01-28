@@ -50,10 +50,12 @@ class DataService:
             logger.warning("User have not permission to send message")
             raise err.NoWritePermissionError(request)
             
-        await self.user_messages.add_message(request)
-        await self.user_chats.set_chat(request)
+        async with self.user_chats.set_chat(request):
+            await self.user_messages.add_message(request)
 
     async def add_chat(self, user_id: int, request: models.CreateChatRequestModel) -> str:
+        await self.user_data.get_users_by_ids([user_id for user_id in request.members_ids])
+        
         permissions = {str(member): "user" for member in request.members_ids}
         permissions[str(user_id)] = "owner"
 

@@ -2,7 +2,9 @@ from backend import models
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, cast, String, update
 from backend.errors import UserNotFoundError, ChatNotFoundError
+from contextlib import asynccontextmanager
 from datetime import datetime
+from typing import AsyncGenerator
 
 from logging import getLogger
 logger = getLogger(__name__)
@@ -33,19 +35,26 @@ class ChatRepository:
 
         return str(new_chat.id)
     
-    async def set_chat(self, message: models.MessageModel) -> None:
-        await self.db.execute(
-            update(
-                models.chatsBase
-            ).where(
-                models.chatsBase.id == int(message.chat_id)
-            ).values(
-                last_message_author = int(message.sender),
-                last_message_text = message.content,
-                last_message_time = datetime.fromisoformat(message.created_at)
+    @asynccontextmanager
+    async def set_chat(self, message: models.MessageModel) -> AsyncGenerator[None, None]:
+        try:
+            await self.db.execute(
+                update(
+                    models.chatsBase
+                ).where(
+                    models.chatsBase.id == int(message.chat_id)
+                ).values(
+                    last_message_author = int(message.sender),
+                    last_message_text = message.content,
+                    last_message_time = datetime.fromisoformat(message.created_at)
+                )
             )
-        )
-        await self.db.commit()
+            yield
+            await self.db.commit()
+        
+        except:
+            await self.db.rollback()
+            raise
     
 
 class DataRepository:
