@@ -68,3 +68,8 @@ async def update_token(
     return {
           "access_token": tokens.access_token
     }
+
+@auth_router.delete("/refresh", status_code=status.HTTP_205_RESET_CONTENT)
+async def reset_token(response: Response):
+     response.delete_cookie(key="refresh_token", path="/auth/refresh")
+     # TODO blacklist для отозванных токенов с ttl
